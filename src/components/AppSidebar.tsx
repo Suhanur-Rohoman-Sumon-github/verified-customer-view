@@ -6,7 +6,8 @@ import {
   Users, 
   Shield,
   Menu,
-  X
+  X,
+  Plus
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -22,6 +23,7 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
   const menuItems = [
     { id: "search", title: "Search", icon: Search },
     { id: "orders", title: "Orders", icon: ShoppingCart },
+    { id: "recharge", title: "Recharge", icon: Plus },
     { id: "news", title: "News", icon: Newspaper },
     { id: "referrals", title: "Referrals", icon: Users },
     { id: "rules", title: "Rules", icon: Shield },
