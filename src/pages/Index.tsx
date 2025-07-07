@@ -86,9 +86,11 @@ const Index = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Navbar />
-      <div className="flex flex-1">
-        <AppSidebar activeTab={activeTab} onTabChange={setActiveTab} />
-        <main className="flex-1 p-6 overflow-auto">
+      <div className="flex flex-1 relative">
+        <div className="fixed top-16 left-0 h-[calc(100vh-4rem)] z-10">
+          <AppSidebar activeTab={activeTab} onTabChange={setActiveTab} />
+        </div>
+        <main className="flex-1 ml-64 p-6 h-[calc(100vh-4rem)] overflow-hidden">
           {renderContent()}
         </main>
       </div>

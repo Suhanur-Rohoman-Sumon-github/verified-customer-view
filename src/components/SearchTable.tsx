@@ -5,6 +5,15 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { 
+  Pagination, 
+  PaginationContent, 
+  PaginationItem, 
+  PaginationLink, 
+  PaginationNext, 
+  PaginationPrevious 
+} from "@/components/ui/pagination";
 
 interface SearchResult {
   id: string;
@@ -85,6 +94,8 @@ const mockData: SearchResult[] = [
 export function SearchTable() {
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [searchResults] = useState<SearchResult[]>(mockData);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(25);
   
   const [filters, setFilters] = useState({
     fullName: "",
@@ -100,6 +111,12 @@ export function SearchTable() {
     withZip: false
   });
 
+  // Calculate pagination
+  const totalPages = Math.ceil(searchResults.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentResults = searchResults.slice(startIndex, endIndex);
+
   const handleRowSelect = (id: string) => {
     setSelectedRows(prev => 
       prev.includes(id) 
@@ -110,15 +127,15 @@ export function SearchTable() {
 
   const handleSelectAll = () => {
     setSelectedRows(
-      selectedRows.length === searchResults.length 
+      selectedRows.length === currentResults.length 
         ? [] 
-        : searchResults.map(row => row.id)
+        : currentResults.map(row => row.id)
     );
   };
 
   return (
-    <div className="space-y-6">
-      <Card>
+    <div className="h-full flex flex-col space-y-6">
+      <Card className="flex-shrink-0">
         <CardHeader>
           <CardTitle>Filter</CardTitle>
         </CardHeader>
@@ -212,11 +229,11 @@ export function SearchTable() {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
+      <Card className="flex-1 flex flex-col min-h-0">
+        <CardHeader className="flex flex-row items-center justify-between flex-shrink-0">
           <CardTitle>Search Results</CardTitle>
           <div className="flex items-center gap-2">
-            <Select defaultValue="50">
+            <Select defaultValue="25">
               <SelectTrigger className="w-20">
                 <SelectValue />
               </SelectTrigger>
@@ -230,62 +247,107 @@ export function SearchTable() {
             <Button className="bg-success hover:bg-success/90">Buy Selected</Button>
           </div>
         </CardHeader>
-        <CardContent>
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse">
-              <thead>
-                <tr className="border-b">
-                  <th className="text-left p-3">
-                    <Checkbox 
-                      checked={selectedRows.length === searchResults.length}
-                      onCheckedChange={handleSelectAll}
-                    />
-                  </th>
-                  <th className="text-left p-3 font-medium">Full Name</th>
-                  <th className="text-left p-3 font-medium">City</th>
-                  <th className="text-left p-3 font-medium">State</th>
-                  <th className="text-left p-3 font-medium">ZIP</th>
-                  <th className="text-left p-3 font-medium">Year</th>
-                  <th className="text-left p-3 font-medium">Phone</th>
-                  <th className="text-left p-3 font-medium">Email</th>
-                  <th className="text-left p-3 font-medium">Country</th>
-                  <th className="text-left p-3 font-medium">Price</th>
-                  <th className="text-left p-3 font-medium">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {searchResults.map((row) => (
-                  <tr key={row.id} className="border-b hover:bg-muted/50">
-                    <td className="p-3">
+        <CardContent className="flex-1 flex flex-col min-h-0">
+          <ScrollArea className="flex-1">
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr className="border-b">
+                    <th className="text-left p-3">
                       <Checkbox 
-                        checked={selectedRows.includes(row.id)}
-                        onCheckedChange={() => handleRowSelect(row.id)}
+                        checked={selectedRows.length === currentResults.length && currentResults.length > 0}
+                        onCheckedChange={handleSelectAll}
                       />
-                    </td>
-                    <td className="p-3 font-medium">{row.fullName}</td>
-                    <td className="p-3">{row.city}</td>
-                    <td className="p-3">{row.state}</td>
-                    <td className="p-3">{row.zip}</td>
-                    <td className="p-3">{row.year}</td>
-                    <td className="p-3">
-                      {row.hasPhone ? "✓" : <X size={16} className="text-destructive" />}
-                    </td>
-                    <td className="p-3">
-                      {row.hasEmail ? "✓" : <X size={16} className="text-destructive" />}
-                    </td>
-                    <td className="p-3">
-                      <span className="inline-block w-6 h-4 bg-blue-500 rounded-sm"></span>
-                    </td>
-                    <td className="p-3 text-destructive font-semibold">${row.price.toFixed(2)}</td>
-                    <td className="p-3">
-                      <Button size="sm" className="bg-success hover:bg-success/90">
-                        Buy
-                      </Button>
-                    </td>
+                    </th>
+                    <th className="text-left p-3 font-medium">Full Name</th>
+                    <th className="text-left p-3 font-medium">City</th>
+                    <th className="text-left p-3 font-medium">State</th>
+                    <th className="text-left p-3 font-medium">ZIP</th>
+                    <th className="text-left p-3 font-medium">Year</th>
+                    <th className="text-left p-3 font-medium">Phone</th>
+                    <th className="text-left p-3 font-medium">Email</th>
+                    <th className="text-left p-3 font-medium">Country</th>
+                    <th className="text-left p-3 font-medium">Price</th>
+                    <th className="text-left p-3 font-medium">Action</th>
                   </tr>
+                </thead>
+                <tbody>
+                  {currentResults.map((row) => (
+                    <tr key={row.id} className="border-b hover:bg-muted/50">
+                      <td className="p-3">
+                        <Checkbox 
+                          checked={selectedRows.includes(row.id)}
+                          onCheckedChange={() => handleRowSelect(row.id)}
+                        />
+                      </td>
+                      <td className="p-3 font-medium">{row.fullName}</td>
+                      <td className="p-3">{row.city}</td>
+                      <td className="p-3">{row.state}</td>
+                      <td className="p-3">{row.zip}</td>
+                      <td className="p-3">{row.year}</td>
+                      <td className="p-3">
+                        {row.hasPhone ? "✓" : <X size={16} className="text-destructive" />}
+                      </td>
+                      <td className="p-3">
+                        {row.hasEmail ? "✓" : <X size={16} className="text-destructive" />}
+                      </td>
+                      <td className="p-3">
+                        <span className="inline-block w-6 h-4 bg-blue-500 rounded-sm"></span>
+                      </td>
+                      <td className="p-3 text-destructive font-semibold">${row.price.toFixed(2)}</td>
+                      <td className="p-3">
+                        <Button size="sm" className="bg-success hover:bg-success/90">
+                          Buy
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </ScrollArea>
+          
+          <div className="flex-shrink-0 mt-4">
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious 
+                    href="#" 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (currentPage > 1) setCurrentPage(currentPage - 1);
+                    }}
+                    className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+                  />
+                </PaginationItem>
+                
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                  <PaginationItem key={page}>
+                    <PaginationLink
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setCurrentPage(page);
+                      }}
+                      isActive={currentPage === page}
+                    >
+                      {page}
+                    </PaginationLink>
+                  </PaginationItem>
                 ))}
-              </tbody>
-            </table>
+                
+                <PaginationItem>
+                  <PaginationNext 
+                    href="#" 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+                    }}
+                    className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
           </div>
         </CardContent>
       </Card>
