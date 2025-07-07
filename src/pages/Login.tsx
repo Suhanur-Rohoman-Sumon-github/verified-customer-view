@@ -5,16 +5,24 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
+import { Captcha } from "@/components/Captcha";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [captchaValid, setCaptchaValid] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!captchaValid) {
+      alert("Please complete the captcha verification.");
+      return;
+    }
+    
     setIsLoading(true);
     
     // TODO: Implement actual login with Supabase
@@ -71,7 +79,9 @@ export default function Login() {
               </div>
             </div>
 
-            <Button type="submit" className="w-full" disabled={isLoading}>
+            <Captcha onValidate={setCaptchaValid} isValid={captchaValid} />
+
+            <Button type="submit" className="w-full" disabled={isLoading || !captchaValid}>
               {isLoading ? "Signing in..." : "Sign In"}
             </Button>
 

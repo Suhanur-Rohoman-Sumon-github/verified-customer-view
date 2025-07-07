@@ -16,8 +16,15 @@ const Index = () => {
       case "orders":
         return <OrdersTable />;
       case "recharge":
-        navigate('/payment');
-        return <div className="p-8 text-center">Redirecting to payment...</div>;
+        return (
+          <div className="p-8 text-center">
+            <h2 className="text-2xl font-bold mb-4">Redirecting to payment...</h2>
+            {(() => {
+              setTimeout(() => navigate('/payment'), 0);
+              return null;
+            })()}
+          </div>
+        );
       case "news":
         return (
           <div className="p-8 text-center">

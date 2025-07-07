@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
+import { Captcha } from "@/components/Captcha";
 
 export default function Signup() {
   const [formData, setFormData] = useState({
@@ -16,6 +17,7 @@ export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [captchaValid, setCaptchaValid] = useState(false);
   const navigate = useNavigate();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -30,6 +32,11 @@ export default function Signup() {
     
     if (formData.password !== formData.confirmPassword) {
       alert("Passwords don't match!");
+      return;
+    }
+
+    if (!captchaValid) {
+      alert("Please complete the captcha verification.");
       return;
     }
 
@@ -128,7 +135,9 @@ export default function Signup() {
               </div>
             </div>
 
-            <Button type="submit" className="w-full" disabled={isLoading}>
+            <Captcha onValidate={setCaptchaValid} isValid={captchaValid} />
+
+            <Button type="submit" className="w-full" disabled={isLoading || !captchaValid}>
               {isLoading ? "Creating account..." : "Sign Up"}
             </Button>
 
