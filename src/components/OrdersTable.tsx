@@ -34,7 +34,7 @@ const mockOrders: Order[] = [
     phone: "N/A",
     email: "N/A",
     status: "completed",
-    price: 0.25
+    price: 0.25,
   },
   {
     id: "58974",
@@ -48,7 +48,7 @@ const mockOrders: Order[] = [
     phone: "6024883972",
     email: "andrewnavarro@cox.net",
     status: "completed",
-    price: 0.25
+    price: 0.25,
   },
   {
     id: "72723",
@@ -62,7 +62,7 @@ const mockOrders: Order[] = [
     phone: "7177126341",
     email: "scoresb@aol.com",
     status: "completed",
-    price: 0.25
+    price: 0.25,
   },
   {
     id: "101026",
@@ -76,7 +76,7 @@ const mockOrders: Order[] = [
     phone: "7274799105",
     email: "ALICE@TVGOODS.COM",
     status: "completed",
-    price: 0.25
+    price: 0.25,
   },
   {
     id: "93649",
@@ -90,7 +90,7 @@ const mockOrders: Order[] = [
     phone: "4109242050",
     email: "afayeallen2@hotmail.com",
     status: "completed",
-    price: 0.25
+    price: 0.25,
   },
   {
     id: "87086",
@@ -104,7 +104,7 @@ const mockOrders: Order[] = [
     phone: "7244980957",
     email: "karrieminteer@yahoo.com",
     status: "completed",
-    price: 0.25
+    price: 0.25,
   },
   {
     id: "91232",
@@ -118,7 +118,7 @@ const mockOrders: Order[] = [
     phone: "7852723227",
     email: "ANTHONY.ROBINSON1@VA.GOV",
     status: "completed",
-    price: 0.25
+    price: 0.25,
   },
   {
     id: "145130",
@@ -132,7 +132,7 @@ const mockOrders: Order[] = [
     phone: "2133595037",
     email: "T.HOUSEMUSIC@GMAIL.COM",
     status: "completed",
-    price: 0.25
+    price: 0.25,
   },
   {
     id: "128968",
@@ -146,7 +146,7 @@ const mockOrders: Order[] = [
     phone: "N/A",
     email: "N/A",
     status: "completed",
-    price: 0.25
+    price: 0.25,
   },
   {
     id: "133424",
@@ -160,7 +160,7 @@ const mockOrders: Order[] = [
     phone: "N/A",
     email: "N/A",
     status: "completed",
-    price: 0.25
+    price: 0.25,
   },
   {
     id: "127046",
@@ -174,7 +174,7 @@ const mockOrders: Order[] = [
     phone: "N/A",
     email: "N/A",
     status: "completed",
-    price: 0.25
+    price: 0.25,
   },
   {
     id: "152825",
@@ -188,7 +188,7 @@ const mockOrders: Order[] = [
     phone: "4127713635",
     email: "HARTWEB1@HOTMAIL.COM",
     status: "completed",
-    price: 0.25
+    price: 0.25,
   },
   {
     id: "58580",
@@ -202,8 +202,8 @@ const mockOrders: Order[] = [
     phone: "9516837888",
     email: "gorgeousgirl182@hotmail.com",
     status: "completed",
-    price: 0.25
-  }
+    price: 0.25,
+  },
 ];
 
 export function OrdersTable() {
@@ -227,40 +227,46 @@ export function OrdersTable() {
   };
 
   const handleRowSelect = (id: string) => {
-    setSelectedRows(prev => 
-      prev.includes(id) 
-        ? prev.filter(rowId => rowId !== id)
-        : [...prev, id]
+    setSelectedRows((prev) =>
+      prev.includes(id) ? prev.filter((rowId) => rowId !== id) : [...prev, id]
     );
   };
 
   const handleSelectAll = () => {
     setSelectedRows(
-      selectedRows.length === mockOrders.length 
-        ? [] 
-        : mockOrders.map(order => order.id)
+      selectedRows.length === mockOrders.length
+        ? []
+        : mockOrders.map((order) => order.id)
     );
   };
 
   const downloadSelectedData = () => {
-    const selectedOrders = selectedRows.length > 0 
-      ? mockOrders.filter(order => selectedRows.includes(order.id))
-      : mockOrders;
-    
+    const selectedOrders =
+      selectedRows.length > 0
+        ? mockOrders.filter((order) => selectedRows.includes(order.id))
+        : mockOrders;
+
     const csvContent = [
       // Header
       "ID,Date,Full Name,SSN,DOB,Address,City,State,ZIP,Phone,Email,Status,Cost",
       // Data rows
-      ...selectedOrders.map(order => 
-        `${order.id},"${formatDate(order.orderDate)}","${order.fullName}",${order.ssn},${order.dateOfBirth},"${order.city}, ${order.state}","${order.city}","${order.state}",${order.zip},"${order.phone}","${order.email}",${order.status},$${order.price.toFixed(2)}`
-      )
-    ].join('\n');
+      ...selectedOrders.map(
+        (order) =>
+          `${order.id},"${formatDate(order.orderDate)}","${order.fullName}",${
+            order.ssn
+          },${order.dateOfBirth},"${order.city}, ${order.state}","${
+            order.city
+          }","${order.state}",${order.zip},"${order.phone}","${order.email}",${
+            order.status
+          },$${order.price.toFixed(2)}`
+      ),
+    ].join("\n");
 
-    const blob = new Blob([csvContent], { type: 'text/plain' });
+    const blob = new Blob([csvContent], { type: "text/plain" });
     const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.download = `orders_${new Date().toISOString().split('T')[0]}.txt`;
+    a.download = `orders_${new Date().toISOString().split("T")[0]}.txt`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -269,30 +275,14 @@ export function OrdersTable() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">Orders</h2>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm">
-            <Calendar size={16} className="mr-2" />
-            Filter by Date
-          </Button>
-          <Button 
-            variant="outline" 
-            size="sm"
-            onClick={downloadSelectedData}
-          >
-            <Download size={16} className="mr-2" />
-            Download
-          </Button>
-        </div>
-      </div>
-
-      <Card className="flex-1">
+      <Card className="flex-1 bg-gray-100border  shadow-xl text-[#006bff]">
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             <span>Recent Orders</span>
-            <span className="text-sm font-normal text-muted-foreground">
-              {selectedRows.length > 0 ? `${selectedRows.length} selected` : `${mockOrders.length} total`}
+            <span className="text-sm font-normal text-gray-400">
+              {selectedRows.length > 0
+                ? `${selectedRows.length} selected`
+                : `${mockOrders.length} total`}
             </span>
           </CardTitle>
         </CardHeader>
@@ -300,82 +290,106 @@ export function OrdersTable() {
           <ScrollArea className="h-[600px]">
             <div className="overflow-x-auto">
               <table className="w-full border-collapse">
-                <thead className="sticky top-0 bg-background">
+                <thead className="sticky top-0 bg-[#006bff] text-white">
                   <tr className="border-b">
                     <th className="text-left p-2">
-                      <Checkbox 
-                        checked={selectedRows.length === mockOrders.length && mockOrders.length > 0}
+                      <Checkbox
+                        checked={
+                          selectedRows.length === mockOrders.length &&
+                          mockOrders.length > 0
+                        }
                         onCheckedChange={handleSelectAll}
                       />
                     </th>
                     <th className="text-left p-2 font-medium text-xs">ID</th>
                     <th className="text-left p-2 font-medium text-xs">SSN</th>
-                    <th className="text-left p-2 font-medium text-xs">Full Name</th>
-                    <th className="text-left p-2 font-medium text-xs">Address</th>
+                    <th className="text-left p-2 font-medium text-xs">
+                      Full Name
+                    </th>
+                    <th className="text-left p-2 font-medium text-xs">
+                      Address
+                    </th>
                     <th className="text-left p-2 font-medium text-xs">City</th>
                     <th className="text-left p-2 font-medium text-xs">State</th>
                     <th className="text-left p-2 font-medium text-xs">ZIP</th>
-                    <th className="text-left p-2 font-medium text-xs">Phone</th>
-                    <th className="text-left p-2 font-medium text-xs">E-mail</th>
+
                     <th className="text-left p-2 font-medium text-xs">DOB</th>
-                    <th className="text-left p-2 font-medium text-xs">Country</th>
+
                     <th className="text-left p-2 font-medium text-xs">Cost</th>
-                    <th className="text-left p-2 font-medium text-xs">Date</th>
+
+                    <th className="text-right p-2 font-medium text-xs">
+                      Download
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {mockOrders.map((order) => (
-                    <tr key={order.id} className="border-b hover:bg-muted/50 text-sm">
+                    <tr
+                      key={order.id}
+                      className="border-b hover:bg-[#e6f0ff] text-sm text-[#222]"
+                    >
                       <td className="p-2">
-                        <Checkbox 
+                        <Checkbox
                           checked={selectedRows.includes(order.id)}
                           onCheckedChange={() => handleRowSelect(order.id)}
                         />
                       </td>
                       <td className="p-2 font-mono text-xs">{order.id}</td>
                       <td className="p-2 font-mono text-xs">{order.ssn}</td>
-                      <td className="p-2 font-medium text-xs">{order.fullName}</td>
-                      <td className="p-2 text-xs">{order.city}, {order.state}</td>
+                      <td className="p-2 font-medium text-xs">
+                        {order.fullName}
+                      </td>
+                      <td className="p-2 text-xs">
+                        {order.city}, {order.state}
+                      </td>
                       <td className="p-2 text-xs">{order.city}</td>
                       <td className="p-2 text-xs">{order.state}</td>
                       <td className="p-2 text-xs">{order.zip}</td>
-                      <td className="p-2 text-xs">{order.phone}</td>
-                      <td className="p-2 text-xs">{order.email}</td>
+
                       <td className="p-2 text-xs">{order.dateOfBirth}</td>
-                      <td className="p-2 text-xs">
-                        <span className="inline-block w-6 h-4 bg-blue-500 rounded-sm"></span>
+
+                      <td className="p-2 font-semibold text-xs">
+                        ${order.price.toFixed(2)}
                       </td>
-                      <td className="p-2 font-semibold text-xs">${order.price.toFixed(2)}</td>
-                      <td className="p-2 text-xs">{formatDate(order.orderDate)}</td>
+
+                      <td className="p-2 text-right">
+                        <Download
+                          size={18}
+                          className="inline-block text-[#006bff] opacity-70 hover:opacity-100 cursor-pointer  font-bold"
+                          onClick={() => {
+                            const selectedOrders = [order];
+                            const csvContent = [
+                              "ID,Date,Full Name,SSN,DOB,Address,City,State,ZIP,Phone,Email,Status,Cost",
+                              `${order.id},"${formatDate(order.orderDate)}","${
+                                order.fullName
+                              }",${order.ssn},${order.dateOfBirth},"${
+                                order.city
+                              }, ${order.state}","${order.city}","${
+                                order.state
+                              }",${order.zip},"${order.phone}","${
+                                order.email
+                              }",${order.status},$${order.price.toFixed(2)}`,
+                            ].join("\n");
+                            const blob = new Blob([csvContent], {
+                              type: "text/plain",
+                            });
+                            const url = window.URL.createObjectURL(blob);
+                            const a = document.createElement("a");
+                            a.href = url;
+                            a.download = `order_${order.id}.txt`;
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
+                            window.URL.revokeObjectURL(url);
+                          }}
+                        />
+                      </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
           </ScrollArea>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardContent className="p-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-success">5</div>
-              <div className="text-sm text-muted-foreground">Total Orders</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-success">3</div>
-              <div className="text-sm text-muted-foreground">Completed</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-yellow-600">1</div>
-              <div className="text-sm text-muted-foreground">Pending</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-destructive">1</div>
-              <div className="text-sm text-muted-foreground">Failed</div>
-            </div>
-          </div>
         </CardContent>
       </Card>
     </div>

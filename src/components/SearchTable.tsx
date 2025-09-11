@@ -1,18 +1,24 @@
 import { useState } from "react";
-import { Search, X } from "lucide-react";
+import { Search, X, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { 
-  Pagination, 
-  PaginationContent, 
-  PaginationItem, 
-  PaginationLink, 
-  PaginationNext, 
-  PaginationPrevious 
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
 } from "@/components/ui/pagination";
 
 interface SearchResult {
@@ -39,7 +45,7 @@ const mockData: SearchResult[] = [
     price: 0.25,
     hasPhone: false,
     hasEmail: false,
-    country: "US"
+    country: "US",
   },
   {
     id: "2",
@@ -51,7 +57,7 @@ const mockData: SearchResult[] = [
     price: 0.25,
     hasPhone: false,
     hasEmail: false,
-    country: "US"
+    country: "US",
   },
   {
     id: "3",
@@ -63,7 +69,7 @@ const mockData: SearchResult[] = [
     price: 0.25,
     hasPhone: false,
     hasEmail: false,
-    country: "US"
+    country: "US",
   },
   {
     id: "4",
@@ -75,7 +81,7 @@ const mockData: SearchResult[] = [
     price: 0.25,
     hasPhone: false,
     hasEmail: false,
-    country: "US"
+    country: "US",
   },
   {
     id: "5",
@@ -87,55 +93,41 @@ const mockData: SearchResult[] = [
     price: 0.25,
     hasPhone: false,
     hasEmail: false,
-    country: "US"
-  }
+    country: "US",
+  },
 ];
 
 export function SearchTable() {
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [searchResults] = useState<SearchResult[]>(mockData);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(25);
-  
   const [filters, setFilters] = useState({
     fullName: "",
-    ageFrom: "",
-    ageTo: "",
-    yearFrom: "",
-    yearTo: "",
     city: "",
-    zip: "",
     state: "",
+    zip: "",
+    year: "",
     withEmail: false,
     withPhone: false,
-    withZip: false
   });
 
-  // Calculate pagination
-  const totalPages = Math.ceil(searchResults.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentResults = searchResults.slice(startIndex, endIndex);
-
   const handleRowSelect = (id: string) => {
-    setSelectedRows(prev => 
-      prev.includes(id) 
-        ? prev.filter(rowId => rowId !== id)
-        : [...prev, id]
+    setSelectedRows((prev) =>
+      prev.includes(id) ? prev.filter((rowId) => rowId !== id) : [...prev, id]
     );
   };
 
   const handleSelectAll = () => {
     setSelectedRows(
-      selectedRows.length === currentResults.length 
-        ? [] 
-        : currentResults.map(row => row.id)
+      selectedRows.length === searchResults.length
+        ? []
+        : searchResults.map((row) => row.id)
     );
   };
 
   return (
-    <div className="h-full flex flex-col space-y-6">
-      <Card className="flex-shrink-0">
+    <div className="space-y-6">
+      {/* Search Options */}
+      <Card className="flex-shrink-0 bg-gray-100shadow text-[#006bff] border-0">
         <CardHeader>
           <CardTitle>Filter</CardTitle>
         </CardHeader>
@@ -144,160 +136,221 @@ export function SearchTable() {
             <Input
               placeholder="Full Name"
               value={filters.fullName}
-              onChange={(e) => setFilters(prev => ({ ...prev, fullName: e.target.value }))}
-            />
-            <Input
-              placeholder="Age from"
-              value={filters.ageFrom}
-              onChange={(e) => setFilters(prev => ({ ...prev, ageFrom: e.target.value }))}
-            />
-            <Input
-              placeholder="Year from"
-              value={filters.yearFrom}
-              onChange={(e) => setFilters(prev => ({ ...prev, yearFrom: e.target.value }))}
+              onChange={(e) =>
+                setFilters((prev) => ({
+                  ...prev,
+                  fullName: e.target.value,
+                }))
+              }
             />
             <Input
               placeholder="City"
               value={filters.city}
-              onChange={(e) => setFilters(prev => ({ ...prev, city: e.target.value }))}
+              onChange={(e) =>
+                setFilters((prev) => ({ ...prev, city: e.target.value }))
+              }
             />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+            <Select
+              value={filters.state}
+              onValueChange={(value) =>
+                setFilters((prev) => ({ ...prev, state: value }))
+              }
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select State" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Any">Any</SelectItem>
+                <SelectItem value="AL">Alabama</SelectItem>
+                <SelectItem value="AK">Alaska</SelectItem>
+                <SelectItem value="AZ">Arizona</SelectItem>
+                <SelectItem value="AR">Arkansas</SelectItem>
+                <SelectItem value="CA">California</SelectItem>
+                <SelectItem value="CO">Colorado</SelectItem>
+                <SelectItem value="CT">Connecticut</SelectItem>
+                <SelectItem value="DE">Delaware</SelectItem>
+                <SelectItem value="FL">Florida</SelectItem>
+                <SelectItem value="GA">Georgia</SelectItem>
+                <SelectItem value="HI">Hawaii</SelectItem>
+                <SelectItem value="ID">Idaho</SelectItem>
+                <SelectItem value="IL">Illinois</SelectItem>
+                <SelectItem value="IN">Indiana</SelectItem>
+                <SelectItem value="IA">Iowa</SelectItem>
+                <SelectItem value="KS">Kansas</SelectItem>
+                <SelectItem value="KY">Kentucky</SelectItem>
+                <SelectItem value="LA">Louisiana</SelectItem>
+                <SelectItem value="ME">Maine</SelectItem>
+                <SelectItem value="MD">Maryland</SelectItem>
+                <SelectItem value="MA">Massachusetts</SelectItem>
+                <SelectItem value="MI">Michigan</SelectItem>
+                <SelectItem value="MN">Minnesota</SelectItem>
+                <SelectItem value="MS">Mississippi</SelectItem>
+                <SelectItem value="MO">Missouri</SelectItem>
+                <SelectItem value="MT">Montana</SelectItem>
+                <SelectItem value="NE">Nebraska</SelectItem>
+                <SelectItem value="NV">Nevada</SelectItem>
+                <SelectItem value="NH">New Hampshire</SelectItem>
+                <SelectItem value="NJ">New Jersey</SelectItem>
+                <SelectItem value="NM">New Mexico</SelectItem>
+                <SelectItem value="NY">New York</SelectItem>
+                <SelectItem value="NC">North Carolina</SelectItem>
+                <SelectItem value="ND">North Dakota</SelectItem>
+                <SelectItem value="OH">Ohio</SelectItem>
+                <SelectItem value="OK">Oklahoma</SelectItem>
+                <SelectItem value="OR">Oregon</SelectItem>
+                <SelectItem value="PA">Pennsylvania</SelectItem>
+                <SelectItem value="RI">Rhode Island</SelectItem>
+                <SelectItem value="SC">South Carolina</SelectItem>
+                <SelectItem value="SD">South Dakota</SelectItem>
+                <SelectItem value="TN">Tennessee</SelectItem>
+                <SelectItem value="TX">Texas</SelectItem>
+                <SelectItem value="UT">Utah</SelectItem>
+                <SelectItem value="VT">Vermont</SelectItem>
+                <SelectItem value="VA">Virginia</SelectItem>
+                <SelectItem value="WA">Washington</SelectItem>
+                <SelectItem value="WV">West Virginia</SelectItem>
+                <SelectItem value="WI">Wisconsin</SelectItem>
+                <SelectItem value="WY">Wyoming</SelectItem>
+              </SelectContent>
+            </Select>
             <Input
               placeholder="ZIP"
               value={filters.zip}
-              onChange={(e) => setFilters(prev => ({ ...prev, zip: e.target.value }))}
+              onChange={(e) =>
+                setFilters((prev) => ({ ...prev, zip: e.target.value }))
+              }
             />
-            <Input
-              placeholder="Age to"
-              value={filters.ageTo}
-              onChange={(e) => setFilters(prev => ({ ...prev, ageTo: e.target.value }))}
-            />
-            <Input
-              placeholder="Year to"
-              value={filters.yearTo}
-              onChange={(e) => setFilters(prev => ({ ...prev, yearTo: e.target.value }))}
-            />
-            <Select value={filters.state} onValueChange={(value) => setFilters(prev => ({ ...prev, state: value }))}>
-              <SelectTrigger>
-                <SelectValue placeholder="State" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="CA">California</SelectItem>
-                <SelectItem value="OR">Oregon</SelectItem>
-                <SelectItem value="TX">Texas</SelectItem>
-                <SelectItem value="NY">New York</SelectItem>
-              </SelectContent>
-            </Select>
           </div>
-
-          <div className="flex flex-wrap gap-6 mb-4">
-            <div className="flex items-center space-x-2">
-              <Checkbox 
-                id="withEmail"
-                checked={filters.withEmail}
-                onCheckedChange={(checked) => setFilters(prev => ({ ...prev, withEmail: !!checked }))}
-              />
-              <label htmlFor="withEmail" className="text-sm font-medium">With Email</label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox 
-                id="withPhone"
-                checked={filters.withPhone}
-                onCheckedChange={(checked) => setFilters(prev => ({ ...prev, withPhone: !!checked }))}
-              />
-              <label htmlFor="withPhone" className="text-sm font-medium">With Phone</label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox 
-                id="withZip"
-                checked={filters.withZip}
-                onCheckedChange={(checked) => setFilters(prev => ({ ...prev, withZip: !!checked }))}
-              />
-              <label htmlFor="withZip" className="text-sm font-medium">With Zip</label>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+            <div className="flex flex-col">
+              <div className="flex gap-2">
+                <Input
+                  placeholder="from year"
+                  onChange={(e) =>
+                    setFilters((prev) => ({ ...prev, dobFrom: e.target.value }))
+                  }
+                />
+                <p className="flex items-center justify-center">-</p>
+                <Input
+                  placeholder="to year"
+                  onChange={(e) =>
+                    setFilters((prev) => ({ ...prev, dobTo: e.target.value }))
+                  }
+                />
+              </div>
             </div>
           </div>
-
           <div className="flex gap-2">
-            <Button className="flex items-center gap-2">
+            <Button className="flex items-center gap-2 bg-[#006bff] hover:bg-[#0056cc] text-white">
               <Search size={16} />
               Search
             </Button>
-            <Button variant="outline">Clear</Button>
+            <Button
+              variant="outline"
+              className="border-[#006bff] text-[#006bff] hover:bg-[#006bff]/10"
+              onClick={() =>
+                setFilters({
+                  fullName: "",
+                  city: "",
+                  state: "",
+                  zip: "",
+                  year: "",
+                  withEmail: false,
+                  withPhone: false,
+                })
+              }
+            >
+              Clear
+            </Button>
           </div>
         </CardContent>
       </Card>
-
-      <Card className="flex-1 flex flex-col min-h-0">
-        <CardHeader className="flex flex-row items-center justify-between flex-shrink-0">
-          <CardTitle>Search Results</CardTitle>
-          <div className="flex items-center gap-2">
-            <Select defaultValue="25">
-              <SelectTrigger className="w-20">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="25">25</SelectItem>
-                <SelectItem value="50">50</SelectItem>
-                <SelectItem value="100">100</SelectItem>
-              </SelectContent>
-            </Select>
-            <Button variant="outline" size="sm">Any</Button>
-            <Button className="bg-success hover:bg-success/90">Buy Selected</Button>
-          </div>
+      {/* Results Table */}
+      <Card className="flex-1 bg-gray-100shadow text-[#006bff] border-0">
+        <CardHeader>
+          <CardTitle className="flex items-center justify-between">
+            <span>Search Results</span>
+            <span className="text-sm font-normal text-[#006bff]/70">
+              {selectedRows.length > 0
+                ? `${selectedRows.length} selected`
+                : `${searchResults.length} total`}
+            </span>
+          </CardTitle>
         </CardHeader>
-        <CardContent className="flex-1 flex flex-col min-h-0">
-          <ScrollArea className="flex-1">
+        <CardContent>
+          <ScrollArea className="h-[600px]">
             <div className="overflow-x-auto">
               <table className="w-full border-collapse">
-                <thead>
-                  <tr className="border-b">
-                    <th className="text-left p-3">
-                      <Checkbox 
-                        checked={selectedRows.length === currentResults.length && currentResults.length > 0}
+                <thead className="sticky top-0 bg-[#006bff] text-white">
+                  <tr>
+                    <th className="text-left p-2">
+                      <Checkbox
+                        checked={
+                          selectedRows.length === searchResults.length &&
+                          searchResults.length > 0
+                        }
                         onCheckedChange={handleSelectAll}
                       />
                     </th>
-                    <th className="text-left p-3 font-medium">Full Name</th>
-                    <th className="text-left p-3 font-medium">City</th>
-                    <th className="text-left p-3 font-medium">State</th>
-                    <th className="text-left p-3 font-medium">ZIP</th>
-                    <th className="text-left p-3 font-medium">Year</th>
-                    <th className="text-left p-3 font-medium">Phone</th>
-                    <th className="text-left p-3 font-medium">Email</th>
-                    <th className="text-left p-3 font-medium">Country</th>
-                    <th className="text-left p-3 font-medium">Price</th>
-                    <th className="text-left p-3 font-medium">Action</th>
+                    <th className="text-left p-2 font-medium text-xs">
+                      Full Name
+                    </th>
+                    <th className="text-left p-2 font-medium text-xs">City</th>
+                    <th className="text-left p-2 font-medium text-xs">State</th>
+                    <th className="text-left p-2 font-medium text-xs">ZIP</th>
+                    <th className="text-left p-2 font-medium text-xs">Year</th>
+                    <th className="text-left p-2 font-medium text-xs">Phone</th>
+                    <th className="text-left p-2 font-medium text-xs">Email</th>
+                    <th className="text-left p-2 font-medium text-xs">
+                      Country
+                    </th>
+                    <th className="text-left p-2 font-medium text-xs">Price</th>
+                    <th className="text-right p-2 font-medium text-xs">Buy</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {currentResults.map((row) => (
-                    <tr key={row.id} className="border-b hover:bg-muted/50">
-                      <td className="p-3">
-                        <Checkbox 
+                  {searchResults.map((row) => (
+                    <tr
+                      key={row.id}
+                      className="hover:bg-[#e6f0ff] text-sm text-[#222]"
+                    >
+                      <td className="p-2">
+                        <Checkbox
                           checked={selectedRows.includes(row.id)}
                           onCheckedChange={() => handleRowSelect(row.id)}
                         />
                       </td>
-                      <td className="p-3 font-medium">{row.fullName}</td>
-                      <td className="p-3">{row.city}</td>
-                      <td className="p-3">{row.state}</td>
-                      <td className="p-3">{row.zip}</td>
-                      <td className="p-3">{row.year}</td>
-                      <td className="p-3">
-                        {row.hasPhone ? "✓" : <X size={16} className="text-destructive" />}
+                      <td className="p-2 font-medium text-xs">
+                        {row.fullName}
                       </td>
-                      <td className="p-3">
-                        {row.hasEmail ? "✓" : <X size={16} className="text-destructive" />}
+                      <td className="p-2 text-xs">{row.city}</td>
+                      <td className="p-2 text-xs">{row.state}</td>
+                      <td className="p-2 text-xs">{row.zip}</td>
+                      <td className="p-2 text-xs">{row.year}</td>
+                      <td className="p-2 text-xs">
+                        {row.hasPhone ? (
+                          "✓"
+                        ) : (
+                          <X size={16} className="text-destructive" />
+                        )}
                       </td>
-                      <td className="p-3">
-                        <span className="inline-block w-6 h-4 bg-blue-500 rounded-sm"></span>
+                      <td className="p-2 text-xs">
+                        {row.hasEmail ? (
+                          "✓"
+                        ) : (
+                          <X size={16} className="text-destructive" />
+                        )}
                       </td>
-                      <td className="p-3 text-destructive font-semibold">${row.price.toFixed(2)}</td>
-                      <td className="p-3">
-                        <Button size="sm" className="bg-success hover:bg-success/90">
-                          Buy
+                      <td className="p-2 text-xs">{row.country}</td>
+                      <td className="p-2 font-semibold text-xs">
+                        ${row.price.toFixed(2)}
+                      </td>
+                      <td className="p-2 text-right">
+                        <Button
+                          size="sm"
+                          className="bg-[#006bff] hover:bg-[#0056cc] text-white"
+                        >
+                          <ShoppingCart size={16} />
                         </Button>
                       </td>
                     </tr>
@@ -306,49 +359,6 @@ export function SearchTable() {
               </table>
             </div>
           </ScrollArea>
-          
-          <div className="flex-shrink-0 mt-4">
-            <Pagination>
-              <PaginationContent>
-                <PaginationItem>
-                  <PaginationPrevious 
-                    href="#" 
-                    onClick={(e) => {
-                      e.preventDefault();
-                      if (currentPage > 1) setCurrentPage(currentPage - 1);
-                    }}
-                    className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
-                  />
-                </PaginationItem>
-                
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                  <PaginationItem key={page}>
-                    <PaginationLink
-                      href="#"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setCurrentPage(page);
-                      }}
-                      isActive={currentPage === page}
-                    >
-                      {page}
-                    </PaginationLink>
-                  </PaginationItem>
-                ))}
-                
-                <PaginationItem>
-                  <PaginationNext 
-                    href="#" 
-                    onClick={(e) => {
-                      e.preventDefault();
-                      if (currentPage < totalPages) setCurrentPage(currentPage + 1);
-                    }}
-                    className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
-                  />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
-          </div>
         </CardContent>
       </Card>
     </div>

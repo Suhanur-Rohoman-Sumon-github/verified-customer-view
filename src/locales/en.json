@@ -1,0 +1,17 @@
+{
+  "navbar": {
+    "home": "Home",
+    "login": "Login",
+    "signup": "Sign Up",
+    "language": "Language"
+  },
+  "sidebar": {
+    "search": "Search",
+    "orders": "Orders",
+    "recharge": "Recharge",
+    "news": "News",
+    "referrals": "Referrals",
+    "rules": "Rules"
+  },
+  "welcome": "Welcome to the Verified Customer View!"
+}

@@ -1,15 +1,15 @@
 import { useState } from "react";
-import { 
-  Search, 
-  ShoppingCart, 
-  Newspaper, 
-  Users, 
+import { useTranslation } from "react-i18next";
+import {
+  Search,
+  ShoppingCart,
+  Newspaper,
+  Users,
   Shield,
   Menu,
   X,
-  Plus
+  Plus,
 } from "lucide-react";
-import { NavLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
 interface AppSidebarProps {
@@ -19,65 +19,110 @@ interface AppSidebarProps {
 
 export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const { t } = useTranslation();
 
   const menuItems = [
-    { id: "search", title: "Search", icon: Search },
-    { id: "orders", title: "Orders", icon: ShoppingCart },
-    { id: "recharge", title: "Recharge", icon: Plus },
-    { id: "news", title: "News", icon: Newspaper },
-    { id: "referrals", title: "Referrals", icon: Users },
-    { id: "rules", title: "Rules", icon: Shield },
+    { id: "search", title: t("sidebar.search"), icon: Search },
+    { id: "orders", title: t("sidebar.orders"), icon: ShoppingCart },
+    { id: "recharge", title: t("sidebar.recharge"), icon: Plus },
+    { id: "news", title: t("sidebar.news"), icon: Newspaper },
+    { id: "referrals", title: t("sidebar.referrals"), icon: Users },
+    { id: "rules", title: t("sidebar.rules"), icon: Shield },
   ];
 
   return (
-    <div className={cn(
-      "bg-slate-900 text-white h-screen transition-all duration-300 flex flex-col",
-      isCollapsed ? "w-16" : "w-64"
-    )}>
-      <div className="p-4 border-b border-slate-700 flex items-center justify-between">
-        {!isCollapsed && (
-          <h1 className="text-2xl font-bold italic text-primary">SSNBIT</h1>
+    <>
+      {/* ✅ Mobile Toggle Button */}
+      <button
+        className="md:hidden fixed  left-4 z-30 text-[#006bff]  "
+        onClick={() => setMobileOpen((v) => !v)}
+      >
+        {mobileOpen ? <X size={24} /> : <Menu size={24} />}
+      </button>
+
+      {/* ✅ Mobile Sidebar */}
+      <div
+        className={cn(
+          "fixed inset-0 z-40  transition-opacity duration-300 md:hidden",
+          mobileOpen
+            ? "opacity-100 pointer-events-auto"
+            : "opacity-0 pointer-events-none"
         )}
-        <button
-          onClick={() => setIsCollapsed(!isCollapsed)}
-          className="p-2 hover:bg-slate-800 rounded-md transition-colors"
-        >
-          {isCollapsed ? <Menu size={20} /> : <X size={20} />}
-        </button>
+        onClick={() => setMobileOpen(false)}
+      />
+      <div
+        className={cn(
+          "fixed top-0 left-0 h-screen border w-64 z-50 flex flex-col transition-transform duration-300 bg-gray-100 border-r border-[#006bff] shadow-lg text-[#006bff] md:hidden",
+          mobileOpen ? "translate-x-0" : "-translate-x-full"
+        )}
+      >
+        <div className="p-4 border-b border-gray-200 flex items-center justify-between">
+          <h2 className="font-bold text-lg text-[#006bff]">Menu</h2>
+          <button
+            onClick={() => setMobileOpen(false)}
+            className="p-2 hover:bg-gray-200 rounded-md transition-colors text-[#006bff]"
+          >
+            <X size={20} />
+          </button>
+        </div>
+
+        <nav className="flex-1 p-4 overflow-y-auto">
+          <ul className="space-y-2">
+            {menuItems.map((item) => (
+              <li key={item.id}>
+                <button
+                  onClick={() => {
+                    onTabChange(item.id);
+                    setMobileOpen(false);
+                  }}
+                  className={cn(
+                    "w-full flex items-center gap-3 p-3 rounded-md transition-all duration-200",
+                    activeTab === item.id
+                      ? "bg-[#006bff]/10 text-[#006bff] shadow-lg"
+                      : "hover:bg-[#e6f0ff] text-gray-500"
+                  )}
+                >
+                  <item.icon size={20} />
+                  <span className="font-medium">{item.title}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </nav>
       </div>
 
-      <nav className="flex-1 p-4">
-        <ul className="space-y-2">
-          {menuItems.map((item) => (
-            <li key={item.id}>
-              <button
-                onClick={() => onTabChange(item.id)}
-                className={cn(
-                  "w-full flex items-center gap-3 p-3 rounded-md transition-all duration-200",
-                  "hover:bg-slate-800",
-                  activeTab === item.id 
-                    ? "bg-primary text-primary-foreground" 
-                    : "text-slate-300"
-                )}
-              >
-                <item.icon size={20} />
-                {!isCollapsed && (
-                  <span className="font-medium">{item.title}</span>
-                )}
-              </button>
-            </li>
-          ))}
-        </ul>
-      </nav>
-
-      {!isCollapsed && (
-        <div className="p-4 border-t border-slate-700">
-          <div className="text-sm text-slate-400">
-            <p>Balance: <span className="text-success font-semibold">$0.73</span></p>
-            <p className="text-xs mt-1">User: Sayeedrock06</p>
-          </div>
-        </div>
-      )}
-    </div>
+      {/* ✅ Desktop Sidebar */}
+      <div
+        className={cn(
+          "hidden md:flex h-screen transition-all duration-300 flex-col bg-gray-100 text-[#006bff]",
+          isCollapsed ? "w-16" : "w-64"
+        )}
+      >
+        <nav className="flex-1 p-4">
+          <ul className="space-y-2">
+            {menuItems.map((item) => (
+              <li key={item.id}>
+                <button
+                  onClick={() => onTabChange(item.id)}
+                  className={cn(
+                    "w-full flex items-center gap-3 p-3 rounded-md transition-all duration-200",
+                    activeTab === item.id
+                      ? "bg-[#006bff]/10 text-[#006bff] shadow-lg"
+                      : "hover:bg-[#e6f0ff] text-gray-500"
+                  )}
+                >
+                  <item.icon size={20} />
+                  {!isCollapsed && (
+                    <span className="font-medium">{item.title}</span>
+                  )}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
+    </>
   );
 }

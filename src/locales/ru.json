@@ -1,0 +1,17 @@
+{
+  "navbar": {
+    "home": "Главная",
+    "login": "Войти",
+    "signup": "Регистрация",
+    "language": "Язык"
+  },
+  "sidebar": {
+    "search": "Поиск",
+    "orders": "Заказы",
+    "recharge": "Пополнить",
+    "news": "Новости",
+    "referrals": "Рефералы",
+    "rules": "Правила"
+  },
+  "welcome": "Добро пожаловать в Verified Customer View!"
+}

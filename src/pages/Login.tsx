@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -17,29 +23,33 @@ export default function Login() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!captchaValid) {
       alert("Please complete the captcha verification.");
       return;
     }
-    
+
     setIsLoading(true);
-    
+
     // TODO: Implement actual login with Supabase
     console.log("Login attempt:", { email, password });
-    
+
     // Simulate login delay
     setTimeout(() => {
       setIsLoading(false);
-      navigate('/');
+      navigate("/");
     }, 1000);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+    <div className="min-h-screen flex items-center justify-center bg-background p-4 relative ">
+      {/* Download icon top right */}
+
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold text-primary">SSNBIT</CardTitle>
+          <CardTitle className="text-2xl font-bold text-primary">
+            SSNMAX
+          </CardTitle>
           <CardDescription>Sign in to your account</CardDescription>
         </CardHeader>
         <CardContent>
@@ -55,7 +65,7 @@ export default function Login() {
                 required
               />
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
               <div className="relative">
@@ -81,12 +91,18 @@ export default function Login() {
 
             <Captcha onValidate={setCaptchaValid} isValid={captchaValid} />
 
-            <Button type="submit" className="w-full" disabled={isLoading || !captchaValid}>
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={isLoading || !captchaValid}
+            >
               {isLoading ? "Signing in..." : "Sign In"}
             </Button>
 
             <div className="text-center text-sm">
-              <span className="text-muted-foreground">Don't have an account? </span>
+              <span className="text-muted-foreground">
+                Don't have an account?{" "}
+              </span>
               <Link to="/signup" className="text-primary hover:underline">
                 Sign up
               </Link>

@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -12,7 +18,7 @@ export default function Signup() {
     email: "",
     password: "",
     confirmPassword: "",
-    username: ""
+    username: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -21,15 +27,15 @@ export default function Signup() {
   const navigate = useNavigate();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     }));
   };
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (formData.password !== formData.confirmPassword) {
       alert("Passwords don't match!");
       return;
@@ -41,22 +47,26 @@ export default function Signup() {
     }
 
     setIsLoading(true);
-    
+
     // TODO: Implement actual signup with Supabase
     console.log("Signup attempt:", formData);
-    
+
     // Simulate signup delay
     setTimeout(() => {
       setIsLoading(false);
-      navigate('/login');
+      navigate("/login");
     }, 1000);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+    <div className="min-h-screen flex items-center justify-center bg-background p-4 relative ">
+      {/* Download icon top right */}
+
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold text-primary">SSNBIT</CardTitle>
+          <CardTitle className="text-2xl font-bold text-primary">
+            SSNMAX
+          </CardTitle>
           <CardDescription>Create your account</CardDescription>
         </CardHeader>
         <CardContent>
@@ -86,7 +96,7 @@ export default function Signup() {
                 required
               />
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
               <div className="relative">
@@ -130,19 +140,29 @@ export default function Signup() {
                   className="absolute right-2 top-1/2 -translate-y-1/2 h-auto p-1"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 >
-                  {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  {showConfirmPassword ? (
+                    <EyeOff size={16} />
+                  ) : (
+                    <Eye size={16} />
+                  )}
                 </Button>
               </div>
             </div>
 
             <Captcha onValidate={setCaptchaValid} isValid={captchaValid} />
 
-            <Button type="submit" className="w-full" disabled={isLoading || !captchaValid}>
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={isLoading || !captchaValid}
+            >
               {isLoading ? "Creating account..." : "Sign Up"}
             </Button>
 
             <div className="text-center text-sm">
-              <span className="text-muted-foreground">Already have an account? </span>
+              <span className="text-muted-foreground">
+                Already have an account?{" "}
+              </span>
               <Link to="/login" className="text-primary hover:underline">
                 Sign in
               </Link>
