@@ -9,6 +9,7 @@ import {
   Menu,
   X,
   Plus,
+  Coins,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -25,6 +26,8 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
 
   const menuItems = [
     { id: "search", title: t("sidebar.search"), icon: Search },
+    { id: "dlssn", title: "DL+SSN", icon: Shield },
+    { id: "dlcoinbase", title: "DL for Coinbase", icon: Coins },
     { id: "orders", title: t("sidebar.orders"), icon: ShoppingCart },
     { id: "recharge", title: t("sidebar.recharge"), icon: Plus },
     { id: "news", title: t("sidebar.news"), icon: Newspaper },

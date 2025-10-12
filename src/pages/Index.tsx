@@ -7,6 +7,8 @@ import { Navbar } from "@/components/Navbar";
 import Referral from "./Referral.tsx";
 
 import { useNavigate } from "react-router-dom";
+import DLSSN from "./DLSSN.tsx";
+import DLCoinbase from "./DLCoinbase.tsx";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("search");
@@ -17,6 +19,10 @@ const Index = () => {
     referralContent = <SearchTable />;
   } else if (activeTab === "orders") {
     referralContent = <OrdersTable />;
+  } else if (activeTab === "dlssn") {
+    referralContent = <DLSSN />;
+  } else if (activeTab === "dlcoinbase") {
+    referralContent = <DLCoinbase />;
   } else if (activeTab === "recharge") {
     referralContent = (
       <div className="p-8 text-center">
