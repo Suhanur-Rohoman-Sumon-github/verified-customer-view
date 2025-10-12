@@ -12,9 +12,10 @@ import "./lib/i18n";
 import { Provider } from "react-redux";
 import { store } from "./redux/store";
 
-const queryClient = new QueryClient();
-
 const App = () => (
+
+  
+
   <Provider store={store}>
     <TooltipProvider>
       <Toaster />

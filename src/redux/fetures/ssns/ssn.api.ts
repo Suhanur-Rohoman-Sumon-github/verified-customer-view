@@ -17,7 +17,20 @@ const ssnApi = baseApi.injectEndpoints({
         };
       },
     }),
+    buySSn: builder.mutation({
+      query: ({ssnId,userId,price}) => ({
+        url: `/ssns/buy`,
+        method: "PATCH",
+        body: { ssnId,userId,price },
+      }),
+    }),
+    getMySsn: builder.query({
+      query: (userId) => ({
+        url: `/ssns/${userId}`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
-export const { useGetSSnsQuery } = ssnApi;
+export const { useGetSSnsQuery,useBuySSnMutation ,useGetMySsnQuery} = ssnApi;

@@ -9,10 +9,16 @@ import Referral from "./Referral.tsx";
 import { useNavigate } from "react-router-dom";
 import DLSSN from "./DLSSN.tsx";
 import DLCoinbase from "./DLCoinbase.tsx";
+import { useCurrentUser } from "@/utils/getCurrentUser.ts";
+import { useLoadUserFromCookie } from "@/utils/useLoadUserFromCookie.ts";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("search");
   const navigate = useNavigate();
+
+  const user = useCurrentUser();
+
+  useLoadUserFromCookie();
 
   let referralContent = null;
   if (activeTab === "search") {

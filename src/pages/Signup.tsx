@@ -24,6 +24,7 @@ type SignupFormValues = {
 };
 
 export default function Signup() {
+  
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);

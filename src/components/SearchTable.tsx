@@ -18,7 +18,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useGetSSnsQuery } from "@/redux/fetures/ssns/ssn.api";
+import {
+  useBuySSnMutation,
+  useGetSSnsQuery,
+} from "@/redux/fetures/ssns/ssn.api";
+import { useCurrentUser } from "@/utils/getCurrentUser";
 
 interface SearchResult {
   id: string;
@@ -31,6 +35,7 @@ interface SearchResult {
   hasPhone: boolean;
   hasEmail: boolean;
   country: string;
+  _id: string;
 }
 
 export function SearchTable() {
@@ -46,8 +51,13 @@ export function SearchTable() {
     limit: 10,
   });
 
+  const user = useCurrentUser();
+
+
+
   // Fetch data with pagination
   const { data, error, isLoading, refetch } = useGetSSnsQuery(filters);
+  const [buy, { isLoading: isBuying }] = useBuySSnMutation();
 
   const handleRowSelect = (id: string) => {
     setSelectedRows((prev) =>
@@ -67,6 +77,12 @@ export function SearchTable() {
   const handlePageChange = (newPage: number) => {
     if (newPage < 1 || newPage > data?.meta?.totalPage) return;
     setFilters((prev) => ({ ...prev, page: newPage }));
+  };
+
+  const handleBuy = (ssnId: string) => {
+    alert(`Buying SSN with ID: ${ssnId}`);
+    buy({ ssnId, userId: user?._id, price: 0.25 });
+    refetch();
   };
 
   return (
@@ -251,6 +267,7 @@ export function SearchTable() {
                         <Button
                           size="sm"
                           className="bg-[#006bff] hover:bg-[#0056cc] text-white"
+                          onClick={() => handleBuy(row._id)}
                         >
                           <ShoppingCart size={16} />
                         </Button>
