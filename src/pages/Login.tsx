@@ -12,39 +12,65 @@ import { Label } from "@/components/ui/label";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import { Captcha } from "@/components/Captcha";
+import { useForm } from "react-hook-form";
+import { useLoginMutation } from "@/redux/fetures/auth/auth.api";
+import Cookies from "js-cookie";
+import { setUser } from "@/redux/fetures/auth/auth.slice";
+import { useAppDispatch } from "@/redux/hook";
+import { toast } from "sonner";
+type LoginFormValues = {
+  username: string;
+  password: string;
+};
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [captchaValid, setCaptchaValid] = useState(false);
+  const [login, { isLoading }] = useLoginMutation();
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
+  const dispatch = useAppDispatch();
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const [captchaValid, setCaptchaValid] = useState(false);
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormValues>();
+
+  const onSubmit = async (data: LoginFormValues) => {
     if (!captchaValid) {
       alert("Please complete the captcha verification.");
       return;
     }
 
-    setIsLoading(true);
+    try {
+      const res = await login(data).unwrap();
 
-    // TODO: Implement actual login with Supabase
-    console.log("Login attempt:", { email, password });
+      Cookies.set("accessToken", res.data.accessToken, {
+        expires: 7,
+        sameSite: "strict",
+      });
+      Cookies.set("refreshToken", res.data.refreshToken, {
+        expires: 7,
+        sameSite: "strict",
+      });
 
-    // Simulate login delay
+      // Assume res.data.user contains full user info including name
+      dispatch(setUser({ user: res.data.user, token: res.data.accessToken }));
+
+      toast.success("Login Successful");
+      navigate("/exam");
+    } catch (error) {
+      toast.error("Login Failed");
+    }
+
     setTimeout(() => {
-      setIsLoading(false);
       navigate("/");
     }, 1000);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4 relative ">
-      {/* Download icon top right */}
-
+    <div className="min-h-screen flex items-center justify-center bg-background p-4 relative">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold text-primary">
@@ -52,20 +78,28 @@ export default function Login() {
           </CardTitle>
           <CardDescription>Sign in to your account</CardDescription>
         </CardHeader>
+
         <CardContent>
-          <form onSubmit={handleLogin} className="space-y-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            {/* username Field */}
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="username">username</Label>
               <Input
-                id="email"
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
+                id="username"
+                type="username"
+                placeholder="Enter your username"
+                {...register("username", {
+                  required: "username is required",
+                })}
               />
+              {errors.username && (
+                <p className="text-red-500 text-sm">
+                  {errors.username.message}
+                </p>
+              )}
             </div>
 
+            {/* Password Field */}
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
               <div className="relative">
@@ -73,9 +107,13 @@ export default function Login() {
                   id="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter your password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
+                  {...register("password", {
+                    required: "Password is required",
+                    minLength: {
+                      value: 6,
+                      message: "Password must be at least 6 characters",
+                    },
+                  })}
                 />
                 <Button
                   type="button"
@@ -87,10 +125,17 @@ export default function Login() {
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </Button>
               </div>
+              {errors.password && (
+                <p className="text-red-500 text-sm">
+                  {errors.password.message}
+                </p>
+              )}
             </div>
 
+            {/* Captcha */}
             <Captcha onValidate={setCaptchaValid} isValid={captchaValid} />
 
+            {/* Submit Button */}
             <Button
               type="submit"
               className="w-full"

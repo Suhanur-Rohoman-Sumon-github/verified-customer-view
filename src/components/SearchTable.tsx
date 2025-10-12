@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { Search, X, ShoppingCart } from "lucide-react";
+import {
+  Search,
+  X,
+  ShoppingCart,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,21 +18,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
+import { useGetSSnsQuery } from "@/redux/fetures/ssns/ssn.api";
 
 interface SearchResult {
   id: string;
   fullName: string;
   city: string;
   state: string;
-  zip: string;
+  zipecode: string;
   year: number;
   price: number;
   hasPhone: boolean;
@@ -34,81 +33,21 @@ interface SearchResult {
   country: string;
 }
 
-const mockData: SearchResult[] = [
-  {
-    id: "1",
-    fullName: "AUBUCHON DE LYONS J",
-    city: "WOFFORD HEIGHTS",
-    state: "CA",
-    zip: "932854034",
-    year: 1925,
-    price: 0.25,
-    hasPhone: false,
-    hasEmail: false,
-    country: "US",
-  },
-  {
-    id: "2",
-    fullName: "ATTWATER JRDONALD E",
-    city: "WINSTON",
-    state: "OR",
-    zip: "974960910",
-    year: 1948,
-    price: 0.25,
-    hasPhone: false,
-    hasEmail: false,
-    country: "US",
-  },
-  {
-    id: "3",
-    fullName: "BACKES PETER L",
-    city: "WHITTIER",
-    state: "CA",
-    zip: "906033152",
-    year: 1927,
-    price: 0.25,
-    hasPhone: false,
-    hasEmail: false,
-    country: "US",
-  },
-  {
-    id: "4",
-    fullName: "ASIS CONRADO A",
-    city: "WESTMINSTER",
-    state: "CA",
-    zip: "926834026",
-    year: 1939,
-    price: 0.25,
-    hasPhone: false,
-    hasEmail: false,
-    country: "US",
-  },
-  {
-    id: "5",
-    fullName: "ASIS CRESENCIA O",
-    city: "WESTMINSTER",
-    state: "CA",
-    zip: "926834026",
-    year: 1943,
-    price: 0.25,
-    hasPhone: false,
-    hasEmail: false,
-    country: "US",
-  },
-];
-
 export function SearchTable() {
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
-  const [searchResults] = useState<SearchResult[]>(mockData);
   const [filters, setFilters] = useState({
     fullName: "",
     city: "",
     state: "",
     zip: "",
-    year: "",
-    withEmail: false,
-    withPhone: false,
+    dobFrom: "",
+    dobTo: "",
+    page: 1,
+    limit: 10,
   });
+
+  // Fetch data with pagination
+  const { data, error, isLoading, refetch } = useGetSSnsQuery(filters);
 
   const handleRowSelect = (id: string) => {
     setSelectedRows((prev) =>
@@ -117,30 +56,34 @@ export function SearchTable() {
   };
 
   const handleSelectAll = () => {
+    if (!data?.data) return;
     setSelectedRows(
-      selectedRows.length === searchResults.length
+      selectedRows.length === data.data.length
         ? []
-        : searchResults.map((row) => row.id)
+        : data.data.map((row: SearchResult) => row.id)
     );
+  };
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage < 1 || newPage > data?.meta?.totalPage) return;
+    setFilters((prev) => ({ ...prev, page: newPage }));
   };
 
   return (
     <div className="space-y-6">
-      {/* Search Options */}
+      {/* Search Filters */}
       <Card className="flex-shrink-0 bg-gray-100shadow text-[#006bff] border-0">
         <CardHeader>
           <CardTitle>Filter</CardTitle>
         </CardHeader>
         <CardContent>
+          {/* Filter Inputs */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
             <Input
               placeholder="Full Name"
               value={filters.fullName}
               onChange={(e) =>
-                setFilters((prev) => ({
-                  ...prev,
-                  fullName: e.target.value,
-                }))
+                setFilters((prev) => ({ ...prev, fullName: e.target.value }))
               }
             />
             <Input
@@ -160,57 +103,11 @@ export function SearchTable() {
                 <SelectValue placeholder="Select State" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Any">Any</SelectItem>
                 <SelectItem value="AL">Alabama</SelectItem>
                 <SelectItem value="AK">Alaska</SelectItem>
                 <SelectItem value="AZ">Arizona</SelectItem>
                 <SelectItem value="AR">Arkansas</SelectItem>
                 <SelectItem value="CA">California</SelectItem>
-                <SelectItem value="CO">Colorado</SelectItem>
-                <SelectItem value="CT">Connecticut</SelectItem>
-                <SelectItem value="DE">Delaware</SelectItem>
-                <SelectItem value="FL">Florida</SelectItem>
-                <SelectItem value="GA">Georgia</SelectItem>
-                <SelectItem value="HI">Hawaii</SelectItem>
-                <SelectItem value="ID">Idaho</SelectItem>
-                <SelectItem value="IL">Illinois</SelectItem>
-                <SelectItem value="IN">Indiana</SelectItem>
-                <SelectItem value="IA">Iowa</SelectItem>
-                <SelectItem value="KS">Kansas</SelectItem>
-                <SelectItem value="KY">Kentucky</SelectItem>
-                <SelectItem value="LA">Louisiana</SelectItem>
-                <SelectItem value="ME">Maine</SelectItem>
-                <SelectItem value="MD">Maryland</SelectItem>
-                <SelectItem value="MA">Massachusetts</SelectItem>
-                <SelectItem value="MI">Michigan</SelectItem>
-                <SelectItem value="MN">Minnesota</SelectItem>
-                <SelectItem value="MS">Mississippi</SelectItem>
-                <SelectItem value="MO">Missouri</SelectItem>
-                <SelectItem value="MT">Montana</SelectItem>
-                <SelectItem value="NE">Nebraska</SelectItem>
-                <SelectItem value="NV">Nevada</SelectItem>
-                <SelectItem value="NH">New Hampshire</SelectItem>
-                <SelectItem value="NJ">New Jersey</SelectItem>
-                <SelectItem value="NM">New Mexico</SelectItem>
-                <SelectItem value="NY">New York</SelectItem>
-                <SelectItem value="NC">North Carolina</SelectItem>
-                <SelectItem value="ND">North Dakota</SelectItem>
-                <SelectItem value="OH">Ohio</SelectItem>
-                <SelectItem value="OK">Oklahoma</SelectItem>
-                <SelectItem value="OR">Oregon</SelectItem>
-                <SelectItem value="PA">Pennsylvania</SelectItem>
-                <SelectItem value="RI">Rhode Island</SelectItem>
-                <SelectItem value="SC">South Carolina</SelectItem>
-                <SelectItem value="SD">South Dakota</SelectItem>
-                <SelectItem value="TN">Tennessee</SelectItem>
-                <SelectItem value="TX">Texas</SelectItem>
-                <SelectItem value="UT">Utah</SelectItem>
-                <SelectItem value="VT">Vermont</SelectItem>
-                <SelectItem value="VA">Virginia</SelectItem>
-                <SelectItem value="WA">Washington</SelectItem>
-                <SelectItem value="WV">West Virginia</SelectItem>
-                <SelectItem value="WI">Wisconsin</SelectItem>
-                <SelectItem value="WY">Wyoming</SelectItem>
               </SelectContent>
             </Select>
             <Input
@@ -221,27 +118,32 @@ export function SearchTable() {
               }
             />
           </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-            <div className="flex flex-col">
-              <div className="flex gap-2">
-                <Input
-                  placeholder="from year"
-                  onChange={(e) =>
-                    setFilters((prev) => ({ ...prev, dobFrom: e.target.value }))
-                  }
-                />
-                <p className="flex items-center justify-center">-</p>
-                <Input
-                  placeholder="to year"
-                  onChange={(e) =>
-                    setFilters((prev) => ({ ...prev, dobTo: e.target.value }))
-                  }
-                />
-              </div>
+            <div className="flex gap-2">
+              <Input
+                placeholder="From year"
+                value={filters.dobFrom}
+                onChange={(e) =>
+                  setFilters((prev) => ({ ...prev, dobFrom: e.target.value }))
+                }
+              />
+              <p className="flex items-center justify-center">-</p>
+              <Input
+                placeholder="To year"
+                value={filters.dobTo}
+                onChange={(e) =>
+                  setFilters((prev) => ({ ...prev, dobTo: e.target.value }))
+                }
+              />
             </div>
           </div>
+
           <div className="flex gap-2">
-            <Button className="flex items-center gap-2 bg-[#006bff] hover:bg-[#0056cc] text-white">
+            <Button
+              className="flex items-center gap-2 bg-[#006bff] hover:bg-[#0056cc] text-white"
+              onClick={() => refetch()}
+            >
               <Search size={16} />
               Search
             </Button>
@@ -254,9 +156,10 @@ export function SearchTable() {
                   city: "",
                   state: "",
                   zip: "",
-                  year: "",
-                  withEmail: false,
-                  withPhone: false,
+                  dobFrom: "",
+                  dobTo: "",
+                  page: 1,
+                  limit: 10,
                 })
               }
             >
@@ -265,6 +168,7 @@ export function SearchTable() {
           </div>
         </CardContent>
       </Card>
+
       {/* Results Table */}
       <Card className="flex-1 bg-gray-100shadow text-[#006bff] border-0">
         <CardHeader>
@@ -273,7 +177,7 @@ export function SearchTable() {
             <span className="text-sm font-normal text-[#006bff]/70">
               {selectedRows.length > 0
                 ? `${selectedRows.length} selected`
-                : `${searchResults.length} total`}
+                : `${data?.meta?.total ?? 0} total`}
             </span>
           </CardTitle>
         </CardHeader>
@@ -286,8 +190,8 @@ export function SearchTable() {
                     <th className="text-left p-2">
                       <Checkbox
                         checked={
-                          selectedRows.length === searchResults.length &&
-                          searchResults.length > 0
+                          selectedRows.length === data?.data?.length &&
+                          data?.data?.length > 0
                         }
                         onCheckedChange={handleSelectAll}
                       />
@@ -309,7 +213,7 @@ export function SearchTable() {
                   </tr>
                 </thead>
                 <tbody>
-                  {searchResults.map((row) => (
+                  {data?.data?.map((row: SearchResult) => (
                     <tr
                       key={row.id}
                       className="hover:bg-[#e6f0ff] text-sm text-[#222]"
@@ -325,7 +229,7 @@ export function SearchTable() {
                       </td>
                       <td className="p-2 text-xs">{row.city}</td>
                       <td className="p-2 text-xs">{row.state}</td>
-                      <td className="p-2 text-xs">{row.zip}</td>
+                      <td className="p-2 text-xs">{row.zipecode}</td>
                       <td className="p-2 text-xs">{row.year}</td>
                       <td className="p-2 text-xs">
                         {row.hasPhone ? (
@@ -342,9 +246,7 @@ export function SearchTable() {
                         )}
                       </td>
                       <td className="p-2 text-xs">{row.country}</td>
-                      <td className="p-2 font-semibold text-xs">
-                        ${row.price.toFixed(2)}
-                      </td>
+                      <td className="p-2 font-semibold text-xs">${0.25}</td>
                       <td className="p-2 text-right">
                         <Button
                           size="sm"
@@ -359,6 +261,31 @@ export function SearchTable() {
               </table>
             </div>
           </ScrollArea>
+
+          {/* Pagination Controls */}
+          {data?.meta && (
+            <div className="flex justify-center gap-4 items-center mt-4 text-sm text-[#006bff]">
+              <Button
+                variant="outline"
+                className="flex items-center gap-1"
+                disabled={filters.page === 1}
+                onClick={() => handlePageChange(filters.page - 1)}
+              >
+                <ChevronLeft size={16} /> Prev
+              </Button>
+              <span>
+                Page {data.meta.page} of {data.meta.totalPage}
+              </span>
+              <Button
+                variant="outline"
+                className="flex items-center gap-1"
+                disabled={filters.page === data.meta.totalPage}
+                onClick={() => handlePageChange(filters.page + 1)}
+              >
+                Next <ChevronRight size={16} />
+              </Button>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

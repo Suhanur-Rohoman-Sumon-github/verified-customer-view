@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import {
   Card,
@@ -12,56 +13,65 @@ import { Label } from "@/components/ui/label";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import { Captcha } from "@/components/Captcha";
+import { useForm } from "react-hook-form";
+import { useRegistrationMutation } from "@/redux/fetures/auth/auth.api";
+import { toast } from "sonner";
+
+type SignupFormValues = {
+  username: string;
+  password: string;
+  confirmPassword: string;
+};
 
 export default function Signup() {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-    confirmPassword: "",
-    username: "",
-  });
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+
   const [captchaValid, setCaptchaValid] = useState(false);
-  const navigate = useNavigate();
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
+  const [registration, { isLoading }] = useRegistrationMutation();
 
-  const handleSignup = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<SignupFormValues>({
+    defaultValues: {
+      username: "",
+      password: "",
+      confirmPassword: "",
+    },
+  });
 
-    if (formData.password !== formData.confirmPassword) {
-      alert("Passwords don't match!");
-      return;
-    }
+  const password = watch("password");
 
+  const onSubmit = async (data: SignupFormValues) => {
     if (!captchaValid) {
       alert("Please complete the captcha verification.");
       return;
     }
 
-    setIsLoading(true);
+    // TODO: Replace this with actual signup API call
+    try {
+      const result = await registration({
+        username: data.username,
+        password: data.password,
+      }).unwrap();
+      
+      toast.success("Account created successfully!");
+    } catch (err: any) {
+      toast.error(err?.data?.message || "An error occurred during sign up.");
+    }
 
-    // TODO: Implement actual signup with Supabase
-    console.log("Signup attempt:", formData);
-
-    // Simulate signup delay
     setTimeout(() => {
-      setIsLoading(false);
       navigate("/login");
     }, 1000);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4 relative ">
-      {/* Download icon top right */}
-
+    <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold text-primary">
@@ -70,44 +80,37 @@ export default function Signup() {
           <CardDescription>Create your account</CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSignup} className="space-y-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            {/* Username */}
             <div className="space-y-2">
               <Label htmlFor="username">Username</Label>
               <Input
                 id="username"
-                name="username"
-                type="text"
                 placeholder="Enter your username"
-                value={formData.username}
-                onChange={handleInputChange}
-                required
+                {...register("username", {
+                  required: "Username is required",
+                  minLength: { value: 3, message: "Minimum 3 characters" },
+                })}
               />
+              {errors.username && (
+                <p className="text-red-500 text-sm">
+                  {errors.username.message}
+                </p>
+              )}
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                placeholder="Enter your email"
-                value={formData.email}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-
+            {/* Password */}
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
               <div className="relative">
                 <Input
                   id="password"
-                  name="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter your password"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  required
+                  {...register("password", {
+                    required: "Password is required",
+                    minLength: { value: 6, message: "Minimum 6 characters" },
+                  })}
                 />
                 <Button
                   type="button"
@@ -119,19 +122,26 @@ export default function Signup() {
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </Button>
               </div>
+              {errors.password && (
+                <p className="text-red-500 text-sm">
+                  {errors.password.message}
+                </p>
+              )}
             </div>
 
+            {/* Confirm Password */}
             <div className="space-y-2">
               <Label htmlFor="confirmPassword">Confirm Password</Label>
               <div className="relative">
                 <Input
                   id="confirmPassword"
-                  name="confirmPassword"
                   type={showConfirmPassword ? "text" : "password"}
                   placeholder="Confirm your password"
-                  value={formData.confirmPassword}
-                  onChange={handleInputChange}
-                  required
+                  {...register("confirmPassword", {
+                    required: "Please confirm your password",
+                    validate: (value) =>
+                      value === password || "Passwords do not match",
+                  })}
                 />
                 <Button
                   type="button"
@@ -147,10 +157,17 @@ export default function Signup() {
                   )}
                 </Button>
               </div>
+              {errors.confirmPassword && (
+                <p className="text-red-500 text-sm">
+                  {errors.confirmPassword.message}
+                </p>
+              )}
             </div>
 
+            {/* Captcha */}
             <Captcha onValidate={setCaptchaValid} isValid={captchaValid} />
 
+            {/* Submit */}
             <Button
               type="submit"
               className="w-full"
