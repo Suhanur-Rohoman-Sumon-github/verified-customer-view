@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -14,6 +14,10 @@ export function OrdersTable() {
   const { data, error, isLoading, refetch } = useGetMySsnQuery(user._id);
 
   const orders = data?.data || [];
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
 
   const formatDate = (dateString: string) => {
     if (!dateString) return "";
@@ -30,42 +34,6 @@ export function OrdersTable() {
     setSelectedRows(
       selectedRows.length === orders.length ? [] : orders.map((o) => o._id)
     );
-  };
-
-  const downloadSelectedData = () => {
-    const selectedOrders =
-      selectedRows.length > 0
-        ? orders.filter((o: any) => selectedRows.includes(o._id))
-        : orders;
-
-    const serializedContent = selectedOrders
-      .map(
-        (o: any) => `
-ID: ${o._id}
-Full Name: ${o.fullName}
-SSN: ${o.ssn}
-Date of Birth: ${o.dateOfBirth}
-City: ${o.city}
-State: ${o.state}
-ZIP Code: ${o.zipecode}
-Phone: ${o.phone || "N/A"}
-Email: ${o.email || "N/A"}
-Price: $${o.price || 0}
-Created At: ${formatDate(o.createdAt)}
-----------------------------------------
-`
-      )
-      .join("\n");
-
-    const blob = new Blob([serializedContent], { type: "text/plain" });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `orders_${new Date().toISOString().split("T")[0]}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(url);
   };
 
   if (isLoading)
@@ -87,13 +55,6 @@ Created At: ${formatDate(o.createdAt)}
           <CardTitle className="flex items-center justify-between">
             <span>My Purchased SSNs</span>
             <div className="flex gap-2 items-center">
-              <Button
-                onClick={downloadSelectedData}
-                size="sm"
-                className="bg-[#006bff] hover:bg-[#0056cc] text-white"
-              >
-                Download All
-              </Button>
               <span className="text-sm font-normal text-gray-400">
                 {selectedRows.length > 0
                   ? `${selectedRows.length} selected`

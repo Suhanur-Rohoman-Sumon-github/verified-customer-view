@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Search,
   X,
@@ -51,12 +51,16 @@ export function SearchTable() {
     limit: 10,
   });
 
+  const { data, error, isLoading, refetch } = useGetSSnsQuery(filters);
+  useEffect(() => {
+    setSelectedRows([]);
+    refetch();
+  }, [filters, refetch]);
+
   const user = useCurrentUser();
 
-
-
   // Fetch data with pagination
-  const { data, error, isLoading, refetch } = useGetSSnsQuery(filters);
+
   const [buy, { isLoading: isBuying }] = useBuySSnMutation();
 
   const handleRowSelect = (id: string) => {
@@ -79,10 +83,19 @@ export function SearchTable() {
     setFilters((prev) => ({ ...prev, page: newPage }));
   };
 
-  const handleBuy = (ssnId: string) => {
-    alert(`Buying SSN with ID: ${ssnId}`);
-    buy({ ssnId, userId: user?._id, price: 0.25 });
-    refetch();
+  const handleBuy = async (ssnId: string) => {
+    try {
+      const result = await buy({
+        ssnId,
+        userId: user?._id,
+        price: 0.25,
+      }).unwrap();
+      await refetch(); 
+      alert("SSN purchased successfully!");
+    } catch (error) {
+      console.error("Buy failed:", error);
+      alert("Failed to purchase. Please try again.");
+    }
   };
 
   return (
