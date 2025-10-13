@@ -23,13 +23,17 @@ import {
   useGetSSnsQuery,
 } from "@/redux/fetures/ssns/ssn.api";
 import { useCurrentUser } from "@/utils/getCurrentUser";
+import { toast } from "sonner";
 
 interface SearchResult {
   id: string;
+  firstName: string;
+  lastName: string;
   fullName: string;
+  dateOfBirth: string;
   city: string;
   state: string;
-  zipecode: string;
+  zipCode: string;
   year: number;
   price: number;
   hasPhone: boolean;
@@ -41,12 +45,13 @@ interface SearchResult {
 export function SearchTable() {
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [filters, setFilters] = useState({
-    fullName: "",
+    firstName: "",
+    lastName: "",
     city: "",
     state: "",
-    zip: "",
-    dobFrom: "",
-    dobTo: "",
+    zipCode: "",
+    dateOfBirthFrom: "",
+    dateOfBirthTo: "",
     page: 1,
     limit: 10,
   });
@@ -56,12 +61,13 @@ export function SearchTable() {
     setSelectedRows([]);
     refetch();
   }, [filters, refetch]);
-
   const user = useCurrentUser();
 
   // Fetch data with pagination
 
   const [buy, { isLoading: isBuying }] = useBuySSnMutation();
+
+  if (isLoading) return <div>Loading...</div>;
 
   const handleRowSelect = (id: string) => {
     setSelectedRows((prev) =>
@@ -74,7 +80,7 @@ export function SearchTable() {
     setSelectedRows(
       selectedRows.length === data.data.length
         ? []
-        : data.data.map((row: SearchResult) => row.id)
+        : data.data.map((row: SearchResult) => row._id)
     );
   };
 
@@ -90,8 +96,8 @@ export function SearchTable() {
         userId: user?._id,
         price: 0.25,
       }).unwrap();
-      await refetch(); 
-      alert("SSN purchased successfully!");
+      await refetch();
+      toast.success("Purchase successful!");
     } catch (error) {
       console.error("Buy failed:", error);
       alert("Failed to purchase. Please try again.");
@@ -109,10 +115,17 @@ export function SearchTable() {
           {/* Filter Inputs */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
             <Input
-              placeholder="Full Name"
-              value={filters.fullName}
+              placeholder="First Name"
+              value={filters.firstName}
               onChange={(e) =>
-                setFilters((prev) => ({ ...prev, fullName: e.target.value }))
+                setFilters((prev) => ({ ...prev, firstName: e.target.value }))
+              }
+            />
+            <Input
+              placeholder="Last Name"
+              value={filters.lastName}
+              onChange={(e) =>
+                setFilters((prev) => ({ ...prev, lastName: e.target.value }))
               }
             />
             <Input
@@ -128,22 +141,25 @@ export function SearchTable() {
                 setFilters((prev) => ({ ...prev, state: value }))
               }
             >
+              {" "}
               <SelectTrigger>
-                <SelectValue placeholder="Select State" />
-              </SelectTrigger>
+                {" "}
+                <SelectValue placeholder="Select State" />{" "}
+              </SelectTrigger>{" "}
               <SelectContent>
-                <SelectItem value="AL">Alabama</SelectItem>
-                <SelectItem value="AK">Alaska</SelectItem>
-                <SelectItem value="AZ">Arizona</SelectItem>
-                <SelectItem value="AR">Arkansas</SelectItem>
-                <SelectItem value="CA">California</SelectItem>
-              </SelectContent>
+                {" "}
+                <SelectItem value="AL">Alabama</SelectItem>{" "}
+                <SelectItem value="AK">Alaska</SelectItem>{" "}
+                <SelectItem value="AZ">Arizona</SelectItem>{" "}
+                <SelectItem value="AR">Arkansas</SelectItem>{" "}
+                <SelectItem value="CA">California</SelectItem>{" "}
+              </SelectContent>{" "}
             </Select>
             <Input
               placeholder="ZIP"
-              value={filters.zip}
+              value={filters.zipCode}
               onChange={(e) =>
-                setFilters((prev) => ({ ...prev, zip: e.target.value }))
+                setFilters((prev) => ({ ...prev, zipCode: e.target.value }))
               }
             />
           </div>
@@ -152,17 +168,22 @@ export function SearchTable() {
             <div className="flex gap-2">
               <Input
                 placeholder="From year"
-                value={filters.dobFrom}
+                value={filters.dateOfBirthFrom}
                 onChange={(e) =>
-                  setFilters((prev) => ({ ...prev, dobFrom: e.target.value }))
+                  setFilters((prev) => ({
+                    ...prev,
+                    dateOfBirthFrom: e.target.value,
+                  }))
                 }
               />
-              <p className="flex items-center justify-center">-</p>
               <Input
                 placeholder="To year"
-                value={filters.dobTo}
+                value={filters.dateOfBirthTo}
                 onChange={(e) =>
-                  setFilters((prev) => ({ ...prev, dobTo: e.target.value }))
+                  setFilters((prev) => ({
+                    ...prev,
+                    dateOfBirthTo: e.target.value,
+                  }))
                 }
               />
             </div>
@@ -181,12 +202,13 @@ export function SearchTable() {
               className="border-[#006bff] text-[#006bff] hover:bg-[#006bff]/10"
               onClick={() =>
                 setFilters({
-                  fullName: "",
+                  firstName: "",
+                  lastName: "",
                   city: "",
                   state: "",
-                  zip: "",
-                  dobFrom: "",
-                  dobTo: "",
+                  zipCode: "",
+                  dateOfBirthFrom: "",
+                  dateOfBirthTo: "",
                   page: 1,
                   limit: 10,
                 })
@@ -244,46 +266,50 @@ export function SearchTable() {
                 <tbody>
                   {data?.data?.map((row: SearchResult) => (
                     <tr
-                      key={row.id}
+                      key={row._id}
                       className="hover:bg-[#e6f0ff] text-sm text-[#222]"
                     >
                       <td className="p-2">
                         <Checkbox
-                          checked={selectedRows.includes(row.id)}
-                          onCheckedChange={() => handleRowSelect(row.id)}
+                          checked={selectedRows.includes(row._id)}
+                          onCheckedChange={() => handleRowSelect(row._id)}
                         />
                       </td>
                       <td className="p-2 font-medium text-xs">
-                        {row.fullName}
+                        {row.firstName} {row.lastName}
                       </td>
                       <td className="p-2 text-xs">{row.city}</td>
                       <td className="p-2 text-xs">{row.state}</td>
-                      <td className="p-2 text-xs">{row.zipecode}</td>
-                      <td className="p-2 text-xs">{row.year}</td>
+                      <td className="p-2 text-xs">{row.zipCode}</td>
+                      <td className="p-2 text-xs">{row.dateOfBirth}</td>
                       <td className="p-2 text-xs">
+                        {" "}
                         {row.hasPhone ? (
                           "✓"
                         ) : (
                           <X size={16} className="text-destructive" />
-                        )}
-                      </td>
+                        )}{" "}
+                      </td>{" "}
                       <td className="p-2 text-xs">
+                        {" "}
                         {row.hasEmail ? (
                           "✓"
                         ) : (
                           <X size={16} className="text-destructive" />
-                        )}
-                      </td>
-                      <td className="p-2 text-xs">{row.country}</td>
-                      <td className="p-2 font-semibold text-xs">${0.25}</td>
+                        )}{" "}
+                      </td>{" "}
+                      <td className="p-2 text-xs">{row.country}</td>{" "}
+                      <td className="p-2 font-semibold text-xs">${0.25}</td>{" "}
                       <td className="p-2 text-right">
+                        {" "}
                         <Button
                           size="sm"
                           className="bg-[#006bff] hover:bg-[#0056cc] text-white"
                           onClick={() => handleBuy(row._id)}
                         >
-                          <ShoppingCart size={16} />
-                        </Button>
+                          {" "}
+                          <ShoppingCart size={16} />{" "}
+                        </Button>{" "}
                       </td>
                     </tr>
                   ))}

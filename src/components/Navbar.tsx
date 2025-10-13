@@ -9,13 +9,24 @@ import {
 import { User, LogOut, Settings, Menu, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useCurrentUser } from "@/utils/getCurrentUser";
+import { useGetMyBalanceQuery } from "@/redux/fetures/auth/auth.api";
 
 export function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
   const navigate = useNavigate();
+  const user = useCurrentUser();
+
+  const { data: balanceData, refetch } = useGetMyBalanceQuery(
+    user?._id as string,
+    {
+      skip: !user?._id,
+    }
+  );
+
   const { t, i18n } = useTranslation();
-  const balance = 500.0; // will come from backend
-  const user = { name: "Sayeedrock06", avatar: "" }; // from auth
+  const balance = balanceData?.data?.balance; 
+
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const handlePaymentClick = () => {
@@ -75,7 +86,7 @@ export function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
           onClick={handlePaymentClick}
         >
           <span className="opacity-80">Balance:</span>
-          <span className="ml-1 font-bold">${balance.toFixed(2)}</span>
+          <span className="ml-1 font-bold">${balance?.toFixed(2)}</span>
         </Button>
 
         {/* User Dropdown */}
@@ -87,9 +98,9 @@ export function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
               style={{ color: "#006bff" }}
             >
               <Avatar className="h-full w-full">
-                <AvatarImage src={user.avatar} alt={user.name} />
+                <AvatarImage src={user?.avatar} alt={user.username} />
                 <AvatarFallback className="bg-[#006bff] text-white/90">
-                  {user.name.substring(0, 2).toUpperCase()}
+                  {user?.username?.substring(0, 2).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
             </Button>
@@ -101,7 +112,7 @@ export function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
           >
             <DropdownMenuItem className="flex items-center gap-2 hover:bg-[#e6f0ff]">
               <User size={16} color="#006bff" />
-              <span>{user.name}</span>
+              <span>{user.username}</span>
             </DropdownMenuItem>
             <DropdownMenuItem className="flex items-center gap-2 hover:bg-[#e6f0ff]">
               <Settings size={16} color="#006bff" />

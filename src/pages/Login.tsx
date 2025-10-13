@@ -59,7 +59,6 @@ export default function Login() {
       dispatch(setUser({ user: res.data.user, token: res.data.accessToken }));
 
       toast.success("Login Successful");
-      navigate("/exam");
     } catch (error) {
       toast.error("Login Failed");
     }

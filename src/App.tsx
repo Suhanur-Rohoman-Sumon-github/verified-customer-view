@@ -13,13 +13,10 @@ import { Provider } from "react-redux";
 import { store } from "./redux/store";
 
 const App = () => (
-
-  
-
   <Provider store={store}>
     <TooltipProvider>
       <Toaster />
-      <Sonner />
+      <Sonner richColors />
       <div className=" min-h-screen text-gray-900 ">
         <BrowserRouter>
           <Routes>

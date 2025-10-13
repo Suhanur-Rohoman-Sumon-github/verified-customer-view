@@ -20,6 +20,11 @@ const Index = () => {
 
   useLoadUserFromCookie();
 
+  if (!user || !user._id) {
+    navigate("/login");
+    return null;
+  }
+
   let referralContent = null;
   if (activeTab === "search") {
     referralContent = <SearchTable />;

@@ -17,6 +17,7 @@ type DecodedToken = {
   currentStep:string
   certifications:string
   progressStatus:string
+  balance:number
 };
 
 export function useLoadUserFromCookie() {
@@ -31,12 +32,9 @@ export function useLoadUserFromCookie() {
 
       const user = {
    _id: decodedToken._id,
-    name: decodedToken.name,
+    username: decodedToken.username,
     role: decodedToken.role,
-    email: decodedToken.email,
-    currentStep: decodedToken.currentStep,
-    certifications: decodedToken.certifications,
-    progressStatus: decodedToken.progressStatus,
+   balance : decodedToken.balance,
       };
 
       dispatch(setUser({ user, token: accessToken }));

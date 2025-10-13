@@ -4,7 +4,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 export type TUser = {
     _id:string
-    name:string
+    username:string
     email:string
     userId:string
     role:string
@@ -13,6 +13,8 @@ export type TUser = {
     progressStatus:string
     exp:number
     certifications:object
+    balance:number
+    avatar?:string
 }
 
 type TAuthState = {

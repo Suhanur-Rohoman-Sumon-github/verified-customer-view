@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ArrowLeft, Copy } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useGetMyBalanceQuery } from "@/redux/fetures/auth/auth.api";
+import { useCurrentUser } from "@/utils/getCurrentUser";
 
 const coinRates: Record<string, number> = {
   "USDT Tron (TRC-20)": 1,
@@ -16,6 +18,7 @@ const coinRates: Record<string, number> = {
 };
 
 export default function Payment() {
+  const user = useCurrentUser();
   const [amount, setAmount] = useState("");
   const [selectedMethod, setSelectedMethod] = useState("");
   const [activeTab, setActiveTab] = useState("deposit");
@@ -25,6 +28,13 @@ export default function Payment() {
   const [countdown, setCountdown] = useState(60);
   const [processing, setProcessing] = useState(false);
   const navigate = useNavigate();
+
+  const { data: balanceData, refetch } = useGetMyBalanceQuery(
+    user?._id as string,
+    {
+      skip: !user?._id,
+    }
+  );
 
   const paymentOptions = Object.keys(coinRates);
   const cryptoAmount =
@@ -80,7 +90,7 @@ export default function Payment() {
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-6">
               <div>
                 <div className="text-3xl font-bold text-[#006bff] bg-[#e6f0ff] px-6 py-2 rounded-lg inline-block mb-2">
-                  $7.18
+                  ${balanceData?.data?.balance || "0.00"}
                 </div>
                 <div className="text-[#006bff] font-medium">
                   Current balance

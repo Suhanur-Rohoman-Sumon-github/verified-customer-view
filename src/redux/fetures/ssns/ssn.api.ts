@@ -17,13 +17,17 @@ const ssnApi = baseApi.injectEndpoints({
         };
       },
     }),
-    buySSn: builder.mutation({
-      query: ({ssnId,userId,price}) => ({
-        url: `/ssns/buy`,
-        method: "PATCH",
-        body: { ssnId,userId,price },
-      }),
-    }),
+  buySSn: builder.mutation({
+  query: ({ ssnId, userId, price }) => ({
+    url: `/ssns/buy`,
+    method: "PATCH",
+    body: { ssnId, userId, price },
+  }),
+  invalidatesTags: (_result, _error, { userId }) => [
+    { type: "User", id: `BALANCE-${userId}` }, 
+  ],
+}),
+
     getMySsn: builder.query({
       query: (userId) => ({
         url: `/ssns/${userId}`,

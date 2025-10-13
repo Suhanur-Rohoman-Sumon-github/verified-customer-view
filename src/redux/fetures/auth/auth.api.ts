@@ -19,6 +19,14 @@ const authApi = baseApi.injectEndpoints({
     
       invalidatesTags: [{ type: "User", id: "ME" }],
     }),
+   getMyBalance: builder.query({
+  query: (userId) => ({
+    url: `/ssn-user/${userId}`,
+    method: "GET",
+  }),
+  providesTags: (_result, _error, userId) => [{ type: "User", id: `BALANCE-${userId}` }],
+}),
+
     getMe: builder.query({
       query: () => ({
         url: "/user/get-me",
@@ -53,4 +61,5 @@ export const {
   useGetMeQuery,
   useVerifyEmailQuery,
   useUpdateVerifiedUserMutation,
+  useGetMyBalanceQuery,
 } = authApi;
