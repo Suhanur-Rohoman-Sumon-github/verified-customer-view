@@ -245,32 +245,29 @@ export function SearchTable() {
                 <table className="w-full border-collapse">
                   <thead className="sticky top-0 bg-[#006bff] text-white">
                     <tr>
-                      <th className="text-left p-2 font-medium text-xs">
+                      <th className="text-left p-2 font-medium text-base">
                         Full Name
                       </th>
-                      <th className="text-left p-2 font-medium text-xs">
+                      <th className="text-left p-2 font-medium text-base">
                         City
                       </th>
-                      <th className="text-left p-2 font-medium text-xs">
+                      <th className="text-left p-2 font-medium text-base">
                         State
                       </th>
-                      <th className="text-left p-2 font-medium text-xs">ZIP</th>
-                      <th className="text-left p-2 font-medium text-xs">
+                      <th className="text-left p-2 font-medium text-base">
+                        ZIP
+                      </th>
+                      <th className="text-left p-2 font-medium text-base">
                         Year
                       </th>
-                      <th className="text-left p-2 font-medium text-xs">
-                        Phone
-                      </th>
-                      <th className="text-left p-2 font-medium text-xs">
-                        Email
-                      </th>
-                      <th className="text-left p-2 font-medium text-xs">
+
+                      <th className="text-left p-2 font-medium text-base">
                         Country
                       </th>
-                      <th className="text-left p-2 font-medium text-xs">
+                      <th className="text-left p-2 font-medium text-base">
                         Price
                       </th>
-                      <th className="text-right p-2 font-medium text-xs">
+                      <th className="text-right p-2 font-medium text-base">
                         Buy
                       </th>
                     </tr>
@@ -291,29 +288,17 @@ export function SearchTable() {
                           key={row._id}
                           className="hover:bg-[#e6f0ff] text-sm text-[#222]"
                         >
-                          <td className="p-2 font-medium text-xs">
+                          <td className="p-2  text-base">
                             {row.firstName} {row.lastName}
                           </td>
-                          <td className="p-2 text-xs">{row.city}</td>
-                          <td className="p-2 text-xs">{row.state}</td>
-                          <td className="p-2 text-xs">{row.zipCode}</td>
-                          <td className="p-2 text-xs">{row.dateOfBirth}</td>
-                          <td className="p-2 text-xs">
-                            {row.hasPhone ? (
-                              "✓"
-                            ) : (
-                              <X size={16} className="text-destructive" />
-                            )}
+                          <td className="p-2 text-base">{row.city}</td>
+                          <td className="p-2 text-base">{row.state}</td>
+                          <td className="p-2 text-base">{row.zipCode}</td>
+                          <td className="p-2 text-base">{row.dateOfBirth}</td>
+                          <td className="p-2 text-base">{"USA"}</td>
+                          <td className="p-2 font-semibold text-base">
+                            ${0.25}
                           </td>
-                          <td className="p-2 text-xs">
-                            {row.hasEmail ? (
-                              "✓"
-                            ) : (
-                              <X size={16} className="text-destructive" />
-                            )}
-                          </td>
-                          <td className="p-2 text-xs">{row.country}</td>
-                          <td className="p-2 font-semibold text-xs">${0.25}</td>
                           <td className="p-2 text-right">
                             <Button
                               size="sm"

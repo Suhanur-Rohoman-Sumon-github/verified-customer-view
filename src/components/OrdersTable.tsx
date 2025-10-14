@@ -78,17 +78,17 @@ export function OrdersTable() {
                         onCheckedChange={handleSelectAll}
                       />
                     </th>
-                    <th className="text-left p-2 text-xs font-medium">Name</th>
-                    <th className="text-left p-2 text-xs font-medium">SSN</th>
-                    <th className="text-left p-2 text-xs font-medium">
+                    <th className="text-left p-2 text-base font-medium">Name</th>
+                    <th className="text-left p-2 text-base font-medium">SSN</th>
+                    <th className="text-left p-2 text-base font-medium">
                       Address
                     </th>
-                    <th className="text-left p-2 text-xs font-medium">City</th>
-                    <th className="text-left p-2 text-xs font-medium">State</th>
-                    <th className="text-left p-2 text-xs font-medium">ZIP</th>
-                    <th className="text-left p-2 text-xs font-medium">DOB</th>
-                    <th className="text-left p-2 text-xs font-medium">Price</th>
-                    <th className="text-right p-2 text-xs font-medium">
+                    <th className="text-left p-2 text-base font-medium">City</th>
+                    <th className="text-left p-2 text-base font-medium">State</th>
+                    <th className="text-left p-2 text-base font-medium">ZIP</th>
+                    <th className="text-left p-2 text-base font-medium">DOB</th>
+                    <th className="text-left p-2 text-base font-medium">Price</th>
+                    <th className="text-right p-2 text-base font-medium">
                       Download
                     </th>
                   </tr>
@@ -115,16 +115,16 @@ export function OrdersTable() {
                             onCheckedChange={() => handleRowSelect(order._id)}
                           />
                         </td>
-                        <td className="p-2 text-xs font-medium">
+                        <td className="p-2 text-base ">
                           {order.firstName} {order.lastName}
                         </td>
-                        <td className="p-2 text-xs">{order.ssnNumber}</td>
-                        <td className="p-2 text-xs">{order.address}</td>
-                        <td className="p-2 text-xs">{order.city}</td>
-                        <td className="p-2 text-xs">{order.state}</td>
-                        <td className="p-2 text-xs">{order.zipCode}</td>
-                        <td className="p-2 text-xs">{order.dateOfBirth}</td>
-                        <td className="p-2 text-xs font-semibold">
+                        <td className="p-2 text-base">{order.ssnNumber}</td>
+                        <td className="p-2 text-base">{order.address}</td>
+                        <td className="p-2 text-base">{order.city}</td>
+                        <td className="p-2 text-base">{order.state}</td>
+                        <td className="p-2 text-base">{order.zipCode}</td>
+                        <td className="p-2 text-base">{order.dateOfBirth}</td>
+                        <td className="p-2 text-base font-semibold">
                           ${order.price?.toFixed(2)}
                         </td>
                         <td className="p-2 text-right">
