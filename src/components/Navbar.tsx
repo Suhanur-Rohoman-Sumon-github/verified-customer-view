@@ -67,13 +67,15 @@ export function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
       <div className="flex items-center gap-2">
         {/* Balance */}
         <Button
-          style={{
-            background: "#006bff",
-            color: "white",
-            border: "none",
-            fontWeight: 700,
-            letterSpacing: "0.03em",
-          }}
+          style={
+            {
+              // background: "#006bff",
+              // color: "white",
+              // border: "none",
+              // fontWeight: 700,
+              // letterSpacing: "0.03em",
+            }
+          }
           className="rounded-full px-3 py-1 text-sm md:px-5 md:py-2 md:text-base hover:opacity-90 transition shadow-none"
           onClick={handlePaymentClick}
         >

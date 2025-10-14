@@ -107,7 +107,7 @@ export function OrdersTable() {
                         <td className="p-2 text-base">{order.state}</td>
                         <td className="p-2 text-base">{order.zipCode}</td>
                         <td className="p-2 text-base">{order.dateOfBirth}</td>
-                        <td className="p-2 text-base font-semibold">
+                        <td className="p-2 text-base ">
                           ${order.price?.toFixed(2)}
                         </td>
                         <td className="p-2 text-right">

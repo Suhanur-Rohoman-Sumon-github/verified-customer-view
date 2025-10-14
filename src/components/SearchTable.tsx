@@ -245,28 +245,14 @@ export function SearchTable() {
                 <table className="w-full border-collapse">
                   <thead className="sticky top-0 bg-[#006bff] text-white text-center">
                     <tr>
-                      <th className=" p-2 font-medium text-base">
-                        Full Name
-                      </th>
-                      <th className=" p-2 font-medium text-base">
-                        City
-                      </th>
-                      <th className=" p-2 font-medium text-base">
-                        State
-                      </th>
-                      <th className=" p-2 font-medium text-base">
-                        ZIP
-                      </th>
-                      <th className=" p-2 font-medium text-base">
-                        Year
-                      </th>
+                      <th className=" p-2 font-medium text-base">Full Name</th>
+                      <th className=" p-2 font-medium text-base">City</th>
+                      <th className=" p-2 font-medium text-base">State</th>
+                      <th className=" p-2 font-medium text-base">ZIP</th>
+                      <th className=" p-2 font-medium text-base">Year</th>
 
-                      <th className=" p-2 font-medium text-base">
-                        Country
-                      </th>
-                      <th className=" p-2 font-medium text-base">
-                        Price
-                      </th>
+                      <th className=" p-2 font-medium text-base">Country</th>
+                      <th className=" p-2 font-medium text-base">Price</th>
                       <th className="text-right p-2 font-medium text-base">
                         Buy
                       </th>
@@ -296,9 +282,7 @@ export function SearchTable() {
                           <td className="p-2 text-base">{row.zipCode}</td>
                           <td className="p-2 text-base">{row.dateOfBirth}</td>
                           <td className="p-2 text-base">{"USA"}</td>
-                          <td className="p-2 font-semibold text-base">
-                            ${0.25}
-                          </td>
+                          <td className="p-2  text-base">${0.25}</td>
                           <td className="p-2 text-right">
                             <Button
                               size="sm"
