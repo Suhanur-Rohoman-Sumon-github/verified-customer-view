@@ -28,6 +28,8 @@ export function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
     }
   );
 
+  console.log(balanceData);
+
   const handleLogout = () => {
     Cookies.remove("accessToken");
     Cookies.remove("refreshToken");
