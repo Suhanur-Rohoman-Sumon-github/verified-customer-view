@@ -28,8 +28,6 @@ export function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
     }
   );
 
- 
-
   const handleLogout = () => {
     Cookies.remove("accessToken");
     Cookies.remove("refreshToken");
@@ -86,14 +84,15 @@ export function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
         {/* User Dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              className="relative h-9 w-9 md:h-11 md:w-11 rounded-full border border-[#006bff] hover:opacity-90 transition bg-gray-100 shadow-none"
-              style={{ color: "#006bff" }}
-            >
-              <Avatar className="h-full w-full">
-                <AvatarImage src={user?.avatar} alt={user.username} />
-                <AvatarFallback className="bg-[#006bff] text-white/90">
+            <Button variant="ghost">
+              <Avatar className="">
+                <AvatarImage
+                  src={
+                    "https://static.vecteezy.com/system/resources/previews/025/463/773/non_2x/hacker-logo-design-a-mysterious-and-dangerous-hacker-illustration-vector.jpg"
+                  }
+                  alt={user.username}
+                />
+                <AvatarFallback className=" text-white/90">
                   {user?.username?.substring(0, 2).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
