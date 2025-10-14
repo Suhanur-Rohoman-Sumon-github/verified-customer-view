@@ -67,27 +67,16 @@ export function OrdersTable() {
           <ScrollArea className="h-[600px]">
             <div className="overflow-x-auto">
               <table className="w-full border-collapse">
-                <thead className="sticky top-0 bg-[#006bff] text-white">
+                <thead className="sticky top-0 bg-[#006bff] text-white text-center">
                   <tr>
-                    <th className="text-left p-2">
-                      <Checkbox
-                        checked={
-                          selectedRows.length === orders.length &&
-                          orders.length > 0
-                        }
-                        onCheckedChange={handleSelectAll}
-                      />
-                    </th>
-                    <th className="text-left p-2 text-base font-medium">Name</th>
-                    <th className="text-left p-2 text-base font-medium">SSN</th>
-                    <th className="text-left p-2 text-base font-medium">
-                      Address
-                    </th>
-                    <th className="text-left p-2 text-base font-medium">City</th>
-                    <th className="text-left p-2 text-base font-medium">State</th>
-                    <th className="text-left p-2 text-base font-medium">ZIP</th>
-                    <th className="text-left p-2 text-base font-medium">DOB</th>
-                    <th className="text-left p-2 text-base font-medium">Price</th>
+                    <th className=" p-2 text-base font-medium">Name</th>
+                    <th className=" p-2 text-base font-medium">SSN</th>
+                    <th className=" p-2 text-base font-medium">Address</th>
+                    <th className=" p-2 text-base font-medium">City</th>
+                    <th className=" p-2 text-base font-medium">State</th>
+                    <th className=" p-2 text-base font-medium">ZIP</th>
+                    <th className=" p-2 text-base font-medium">DOB</th>
+                    <th className=" p-2 text-base font-medium">Price</th>
                     <th className="text-right p-2 text-base font-medium">
                       Download
                     </th>
@@ -107,14 +96,8 @@ export function OrdersTable() {
                     orders.map((order: any) => (
                       <tr
                         key={order._id}
-                        className="border-b hover:bg-[#e6f0ff] text-sm text-[#222]"
+                        className="border-b hover:bg-[#e6f0ff] text-sm text-[#222]  text-center"
                       >
-                        <td className="p-2">
-                          <Checkbox
-                            checked={selectedRows.includes(order._id)}
-                            onCheckedChange={() => handleRowSelect(order._id)}
-                          />
-                        </td>
                         <td className="p-2 text-base ">
                           {order.firstName} {order.lastName}
                         </td>

@@ -243,28 +243,28 @@ export function SearchTable() {
             <ScrollArea className="h-[600px]">
               <div className="overflow-x-auto">
                 <table className="w-full border-collapse">
-                  <thead className="sticky top-0 bg-[#006bff] text-white">
+                  <thead className="sticky top-0 bg-[#006bff] text-white text-center">
                     <tr>
-                      <th className="text-left p-2 font-medium text-base">
+                      <th className=" p-2 font-medium text-base">
                         Full Name
                       </th>
-                      <th className="text-left p-2 font-medium text-base">
+                      <th className=" p-2 font-medium text-base">
                         City
                       </th>
-                      <th className="text-left p-2 font-medium text-base">
+                      <th className=" p-2 font-medium text-base">
                         State
                       </th>
-                      <th className="text-left p-2 font-medium text-base">
+                      <th className=" p-2 font-medium text-base">
                         ZIP
                       </th>
-                      <th className="text-left p-2 font-medium text-base">
+                      <th className=" p-2 font-medium text-base">
                         Year
                       </th>
 
-                      <th className="text-left p-2 font-medium text-base">
+                      <th className=" p-2 font-medium text-base">
                         Country
                       </th>
-                      <th className="text-left p-2 font-medium text-base">
+                      <th className=" p-2 font-medium text-base">
                         Price
                       </th>
                       <th className="text-right p-2 font-medium text-base">
@@ -286,9 +286,9 @@ export function SearchTable() {
                       data?.data?.map((row: SearchResult) => (
                         <tr
                           key={row._id}
-                          className="hover:bg-[#e6f0ff] text-sm text-[#222]"
+                          className="hover:bg-[#e6f0ff] text-sm text-[#222] border-b text-center"
                         >
-                          <td className="p-2  text-base">
+                          <td className="p-2  text-base ">
                             {row.firstName} {row.lastName}
                           </td>
                           <td className="p-2 text-base">{row.city}</td>
