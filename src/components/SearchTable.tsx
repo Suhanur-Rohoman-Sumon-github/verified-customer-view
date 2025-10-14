@@ -24,6 +24,8 @@ import {
 } from "@/redux/fetures/ssns/ssn.api";
 import { useCurrentUser } from "@/utils/getCurrentUser";
 import { toast } from "sonner";
+import Spinner from "./spinner/Spinner";
+import SpinnerOverlay from "./spinner/SpinnerOverlay";
 
 interface SearchResult {
   id: string;
@@ -66,8 +68,6 @@ export function SearchTable() {
   // Fetch data with pagination
 
   const [buy, { isLoading: isBuying }] = useBuySSnMutation();
-
-  if (isLoading) return <div>Loading...</div>;
 
   const handleRowSelect = (id: string) => {
     setSelectedRows((prev) =>
@@ -113,7 +113,7 @@ export function SearchTable() {
         </CardHeader>
         <CardContent>
           {/* Filter Inputs */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 mb-4">
             <Input
               placeholder="First Name"
               value={filters.firstName}
@@ -162,9 +162,7 @@ export function SearchTable() {
                 setFilters((prev) => ({ ...prev, zipCode: e.target.value }))
               }
             />
-          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
             <div className="flex gap-2">
               <Input
                 placeholder="From year"
@@ -221,129 +219,145 @@ export function SearchTable() {
       </Card>
 
       {/* Results Table */}
-      <Card className="flex-1 bg-gray-100shadow text-[#006bff] border-0">
-        <CardHeader>
-          <CardTitle className="flex items-center justify-between">
-            <span>Search Results</span>
-            <span className="text-sm font-normal text-[#006bff]/70">
-              {selectedRows.length > 0
-                ? `${selectedRows.length} selected`
-                : `${data?.meta?.total ?? 0} total`}
-            </span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ScrollArea className="h-[600px]">
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse">
-                <thead className="sticky top-0 bg-[#006bff] text-white">
-                  <tr>
-                    <th className="text-left p-2">
-                      <Checkbox
-                        checked={
-                          selectedRows.length === data?.data?.length &&
-                          data?.data?.length > 0
-                        }
-                        onCheckedChange={handleSelectAll}
-                      />
-                    </th>
-                    <th className="text-left p-2 font-medium text-xs">
-                      Full Name
-                    </th>
-                    <th className="text-left p-2 font-medium text-xs">City</th>
-                    <th className="text-left p-2 font-medium text-xs">State</th>
-                    <th className="text-left p-2 font-medium text-xs">ZIP</th>
-                    <th className="text-left p-2 font-medium text-xs">Year</th>
-                    <th className="text-left p-2 font-medium text-xs">Phone</th>
-                    <th className="text-left p-2 font-medium text-xs">Email</th>
-                    <th className="text-left p-2 font-medium text-xs">
-                      Country
-                    </th>
-                    <th className="text-left p-2 font-medium text-xs">Price</th>
-                    <th className="text-right p-2 font-medium text-xs">Buy</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data?.data?.map((row: SearchResult) => (
-                    <tr
-                      key={row._id}
-                      className="hover:bg-[#e6f0ff] text-sm text-[#222]"
-                    >
-                      <td className="p-2">
-                        <Checkbox
-                          checked={selectedRows.includes(row._id)}
-                          onCheckedChange={() => handleRowSelect(row._id)}
-                        />
-                      </td>
-                      <td className="p-2 font-medium text-xs">
-                        {row.firstName} {row.lastName}
-                      </td>
-                      <td className="p-2 text-xs">{row.city}</td>
-                      <td className="p-2 text-xs">{row.state}</td>
-                      <td className="p-2 text-xs">{row.zipCode}</td>
-                      <td className="p-2 text-xs">{row.dateOfBirth}</td>
-                      <td className="p-2 text-xs">
-                        {" "}
-                        {row.hasPhone ? (
-                          "✓"
-                        ) : (
-                          <X size={16} className="text-destructive" />
-                        )}{" "}
-                      </td>{" "}
-                      <td className="p-2 text-xs">
-                        {" "}
-                        {row.hasEmail ? (
-                          "✓"
-                        ) : (
-                          <X size={16} className="text-destructive" />
-                        )}{" "}
-                      </td>{" "}
-                      <td className="p-2 text-xs">{row.country}</td>{" "}
-                      <td className="p-2 font-semibold text-xs">${0.25}</td>{" "}
-                      <td className="p-2 text-right">
-                        {" "}
-                        <Button
-                          size="sm"
-                          className="bg-[#006bff] hover:bg-[#0056cc] text-white"
-                          onClick={() => handleBuy(row._id)}
-                        >
-                          {" "}
-                          <ShoppingCart size={16} />{" "}
-                        </Button>{" "}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </ScrollArea>
+      {isBuying && (
+        <SpinnerOverlay message="Processing your purchase. Please wait..." />
+      )}
 
-          {/* Pagination Controls */}
-          {data?.meta && (
-            <div className="flex justify-center gap-4 items-center mt-4 text-sm text-[#006bff]">
-              <Button
-                variant="outline"
-                className="flex items-center gap-1"
-                disabled={filters.page === 1}
-                onClick={() => handlePageChange(filters.page - 1)}
-              >
-                <ChevronLeft size={16} /> Prev
-              </Button>
-              <span>
-                Page {data.meta.page} of {data.meta.totalPage}
+      {isLoading ? (
+        <div className="flex justify-center items-center">
+          <Spinner />
+        </div>
+      ) : (
+        <Card className="flex-1 bg-gray-100shadow text-[#006bff] border-0">
+          <CardHeader>
+            <CardTitle className="flex items-center justify-between">
+              <span>Search Results</span>
+              <span className="text-sm font-normal text-[#006bff]/70">
+                {selectedRows.length > 0
+                  ? `${selectedRows.length} selected`
+                  : `${data?.meta?.total ?? 0} total`}
               </span>
-              <Button
-                variant="outline"
-                className="flex items-center gap-1"
-                disabled={filters.page === data.meta.totalPage}
-                onClick={() => handlePageChange(filters.page + 1)}
-              >
-                Next <ChevronRight size={16} />
-              </Button>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ScrollArea className="h-[600px]">
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse">
+                  <thead className="sticky top-0 bg-[#006bff] text-white">
+                    <tr>
+                      <th className="text-left p-2 font-medium text-xs">
+                        Full Name
+                      </th>
+                      <th className="text-left p-2 font-medium text-xs">
+                        City
+                      </th>
+                      <th className="text-left p-2 font-medium text-xs">
+                        State
+                      </th>
+                      <th className="text-left p-2 font-medium text-xs">ZIP</th>
+                      <th className="text-left p-2 font-medium text-xs">
+                        Year
+                      </th>
+                      <th className="text-left p-2 font-medium text-xs">
+                        Phone
+                      </th>
+                      <th className="text-left p-2 font-medium text-xs">
+                        Email
+                      </th>
+                      <th className="text-left p-2 font-medium text-xs">
+                        Country
+                      </th>
+                      <th className="text-left p-2 font-medium text-xs">
+                        Price
+                      </th>
+                      <th className="text-right p-2 font-medium text-xs">
+                        Buy
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data?.data?.length === 0 ? (
+                      <tr>
+                        <td
+                          colSpan={10}
+                          className="text-center py-4 text-sm text-gray-500"
+                        >
+                          No results found
+                        </td>
+                      </tr>
+                    ) : (
+                      data?.data?.map((row: SearchResult) => (
+                        <tr
+                          key={row._id}
+                          className="hover:bg-[#e6f0ff] text-sm text-[#222]"
+                        >
+                          <td className="p-2 font-medium text-xs">
+                            {row.firstName} {row.lastName}
+                          </td>
+                          <td className="p-2 text-xs">{row.city}</td>
+                          <td className="p-2 text-xs">{row.state}</td>
+                          <td className="p-2 text-xs">{row.zipCode}</td>
+                          <td className="p-2 text-xs">{row.dateOfBirth}</td>
+                          <td className="p-2 text-xs">
+                            {row.hasPhone ? (
+                              "✓"
+                            ) : (
+                              <X size={16} className="text-destructive" />
+                            )}
+                          </td>
+                          <td className="p-2 text-xs">
+                            {row.hasEmail ? (
+                              "✓"
+                            ) : (
+                              <X size={16} className="text-destructive" />
+                            )}
+                          </td>
+                          <td className="p-2 text-xs">{row.country}</td>
+                          <td className="p-2 font-semibold text-xs">${0.25}</td>
+                          <td className="p-2 text-right">
+                            <Button
+                              size="sm"
+                              className="bg-[#006bff] hover:bg-[#0056cc] text-white"
+                              onClick={() => handleBuy(row._id)}
+                            >
+                              <ShoppingCart size={16} />
+                            </Button>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </ScrollArea>
+
+            {/* Pagination Controls */}
+            {data?.meta && (
+              <div className="flex justify-center gap-4 items-center mt-4 text-sm text-[#006bff]">
+                <Button
+                  variant="outline"
+                  className="flex items-center gap-1"
+                  disabled={filters.page === 1}
+                  onClick={() => handlePageChange(filters.page - 1)}
+                >
+                  <ChevronLeft size={16} /> Prev
+                </Button>
+                <span>
+                  Page {data.meta.page} of {data.meta.totalPage}
+                </span>
+                <Button
+                  variant="outline"
+                  className="flex items-center gap-1"
+                  disabled={filters.page === data.meta.totalPage}
+                  onClick={() => handlePageChange(filters.page + 1)}
+                >
+                  Next <ChevronRight size={16} />
+                </Button>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }

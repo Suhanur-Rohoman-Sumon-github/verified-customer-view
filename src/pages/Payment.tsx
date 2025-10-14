@@ -7,6 +7,8 @@ import { ArrowLeft, Copy } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useGetMyBalanceQuery } from "@/redux/fetures/auth/auth.api";
 import { useCurrentUser } from "@/utils/getCurrentUser";
+import { useMakeAPaymentMutation } from "@/redux/fetures/payment/payment.api";
+import { use } from "i18next";
 
 const coinRates: Record<string, number> = {
   "USDT Tron (TRC-20)": 1,
@@ -19,6 +21,9 @@ const coinRates: Record<string, number> = {
 
 export default function Payment() {
   const user = useCurrentUser();
+
+  console.log(user);
+
   const [amount, setAmount] = useState("");
   const [selectedMethod, setSelectedMethod] = useState("");
   const [activeTab, setActiveTab] = useState("deposit");
@@ -29,12 +34,23 @@ export default function Payment() {
   const [processing, setProcessing] = useState(false);
   const navigate = useNavigate();
 
+  const [makeAPayment, { isLoading, isSuccess, isError }] =
+    useMakeAPaymentMutation();
+
   const { data: balanceData, refetch } = useGetMyBalanceQuery(
     user?._id as string,
     {
       skip: !user?._id,
     }
   );
+
+  console.log(balanceData);
+
+  useEffect(() => {
+    if (user?._id) {
+      refetch();
+    }
+  }, [user?._id, refetch]);
 
   const paymentOptions = Object.keys(coinRates);
   const cryptoAmount =
@@ -65,13 +81,32 @@ export default function Payment() {
     return () => clearTimeout(timer);
   }, [countdown, processing]);
 
-  const handleCompletePayment = () => {
-    if (!transactionId) {
-      alert("Please enter wallet address and transaction ID");
+  const handleCompletePayment = async () => {
+    if (!transactionId || !selectedMethod || !amount) {
+      alert("Please enter all payment details");
       return;
     }
-    setProcessing(true);
-    setCountdown(60);
+
+    const paymentData = {
+      userId: user?._id,
+      amount: Number(amount),
+      transactionId,
+      coin: selectedMethod,
+    };
+
+    try {
+      setProcessing(true);
+      setCountdown(60);
+
+      const response = await makeAPayment(paymentData).unwrap();
+
+      console.log("Payment response:", response);
+      setStep("success");
+    } catch (error) {
+      console.error("Payment failed:", error);
+      alert("Payment verification failed");
+      setProcessing(false);
+    }
   };
 
   return (
@@ -90,7 +125,7 @@ export default function Payment() {
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-6">
               <div>
                 <div className="text-3xl font-bold text-[#006bff] bg-[#e6f0ff] px-6 py-2 rounded-lg inline-block mb-2">
-                  ${balanceData?.data?.balance || "0.00"}
+                  ${balanceData?.data?.balance.toFixed(2) || "0.00"}
                 </div>
                 <div className="text-[#006bff] font-medium">
                   Current balance
@@ -279,7 +314,8 @@ export default function Payment() {
 
             {/* Transfer Tab */}
             {activeTab === "transfer" && (
-              <div className="flex flex-col items-center justify-center">
+              <div className="relative flex flex-col items-center justify-center">
+                {/* --- Main Transfer UI --- */}
                 <div className="w-full max-w-xl mx-auto bg-gray-100 rounded-xl p-8 border border-[#e5e7eb]">
                   <div className="font-semibold text-lg mb-4">
                     Transfer money to a different account
@@ -306,12 +342,20 @@ export default function Payment() {
                     </button>
                   </div>
                 </div>
+
+                {/* --- Glossy "Coming Soon" Overlay --- */}
+                <div className="absolute inset-0 flex items-center justify-center rounded-xl bg-white/30 backdrop-blur-md z-10">
+                  <div className="text-3xl font-extrabold text-gray-800 drop-shadow-lg bg-gradient-to-r from-[#006bff] to-[#00c3ff] text-transparent bg-clip-text animate-pulse">
+                    🚧 Coming Soon 🚧
+                  </div>
+                </div>
               </div>
             )}
 
             {/* Redeem Tab */}
             {activeTab === "redeem" && (
-              <div className="flex flex-col items-center justify-center">
+              <div className="relative flex flex-col items-center justify-center">
+                {/* --- Main Redeem UI --- */}
                 <div className="w-full max-w-xl mx-auto bg-gray-100 rounded-xl p-8 border border-[#e5e7eb] text-center">
                   <div className="font-semibold text-lg mb-4">
                     Redeem promocode
@@ -320,6 +364,13 @@ export default function Payment() {
                   <Button className="w-full bg-[#006bff] hover:bg-[#0056cc] text-white rounded-md">
                     Redeem
                   </Button>
+                </div>
+
+                {/* --- Glossy "Coming Soon" Overlay --- */}
+                <div className="absolute inset-0 flex items-center justify-center rounded-xl bg-white/30 backdrop-blur-md z-10">
+                  <div className="text-3xl font-extrabold text-gray-800 drop-shadow-lg bg-gradient-to-r from-[#006bff] to-[#00c3ff] text-transparent bg-clip-text animate-pulse">
+                    🚧 Coming Soon 🚧
+                  </div>
                 </div>
               </div>
             )}

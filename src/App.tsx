@@ -11,6 +11,7 @@ import Payment from "./pages/Payment";
 import "./lib/i18n";
 import { Provider } from "react-redux";
 import { store } from "./redux/store";
+import ProtectedRoute from "./components/routes/ProtectedRoute";
 
 const App = () => (
   <Provider store={store}>
@@ -20,11 +21,27 @@ const App = () => (
       <div className=" min-h-screen text-gray-900 ">
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Index />} />
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute>
+                  <Index />
+                </ProtectedRoute>
+              }
+            />
+
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
-            <Route path="/payment" element={<Payment />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+
+            <Route
+              path="/payment"
+              element={
+                <ProtectedRoute>
+                  <Payment />
+                </ProtectedRoute>
+              }
+            />
+
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

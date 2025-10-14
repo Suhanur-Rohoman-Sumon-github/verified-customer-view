@@ -12,10 +12,14 @@ import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import { useCurrentUser } from "@/utils/getCurrentUser";
 import { useGetMyBalanceQuery } from "@/redux/fetures/auth/auth.api";
+import Cookies from "js-cookie";
+import { useAppDispatch } from "@/redux/hook";
+import { logOut } from "@/redux/fetures/auth/auth.slice";
 
 export function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
   const navigate = useNavigate();
   const user = useCurrentUser();
+  const dispatch = useAppDispatch();
 
   const { data: balanceData, refetch } = useGetMyBalanceQuery(
     user?._id as string,
@@ -24,8 +28,15 @@ export function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
     }
   );
 
+  const handleLogout = () => {
+    Cookies.remove("accessToken");
+    Cookies.remove("refreshToken");
+    dispatch(logOut());
+    navigate("/login");
+  };
+
   const { t, i18n } = useTranslation();
-  const balance = balanceData?.data?.balance; 
+  const balance = balanceData?.data?.balance;
 
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -54,25 +65,6 @@ export function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
 
       {/* Right section: User + Mobile Menu */}
       <div className="flex items-center gap-2">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="outline"
-              className="text-[#006bff] hover:bg-[#006bff]/10 border border-transparent text-sm md:text-base"
-            >
-              {t("navbar.language")}
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="start">
-            <DropdownMenuItem onClick={() => handleChangeLanguage("en")}>
-              English
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => handleChangeLanguage("ru")}>
-              Русский
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-
         {/* Balance */}
         <Button
           style={{
@@ -120,7 +112,7 @@ export function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
             </DropdownMenuItem>
             <DropdownMenuItem className="flex items-center gap-2 text-destructive hover:bg-[#e6f0ff]">
               <LogOut size={16} color="#006bff" />
-              <span>Logout</span>
+              <span onClick={handleLogout}>Logout</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

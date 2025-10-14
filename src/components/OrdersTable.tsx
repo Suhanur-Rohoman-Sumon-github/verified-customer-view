@@ -80,6 +80,9 @@ export function OrdersTable() {
                     </th>
                     <th className="text-left p-2 text-xs font-medium">Name</th>
                     <th className="text-left p-2 text-xs font-medium">SSN</th>
+                    <th className="text-left p-2 text-xs font-medium">
+                      Address
+                    </th>
                     <th className="text-left p-2 text-xs font-medium">City</th>
                     <th className="text-left p-2 text-xs font-medium">State</th>
                     <th className="text-left p-2 text-xs font-medium">ZIP</th>
@@ -113,12 +116,13 @@ export function OrdersTable() {
                           />
                         </td>
                         <td className="p-2 text-xs font-medium">
-                          {order.fullName}
+                          {order.firstName} {order.lastName}
                         </td>
-                        <td className="p-2 text-xs">{order.ssn}</td>
+                        <td className="p-2 text-xs">{order.ssnNumber}</td>
+                        <td className="p-2 text-xs">{order.address}</td>
                         <td className="p-2 text-xs">{order.city}</td>
                         <td className="p-2 text-xs">{order.state}</td>
-                        <td className="p-2 text-xs">{order.zipecode}</td>
+                        <td className="p-2 text-xs">{order.zipCode}</td>
                         <td className="p-2 text-xs">{order.dateOfBirth}</td>
                         <td className="p-2 text-xs font-semibold">
                           ${order.price?.toFixed(2)}
@@ -130,16 +134,16 @@ export function OrdersTable() {
                             onClick={() => {
                               const serializedContent = `
 ID: ${order._id}
-Full Name: ${order.fullName}
-SSN: ${order.ssn}
-Date of Birth: ${order.dateOfBirth}
+Full Name: ${order.firstName} ${order.lastName}
+SSN: ${order.ssnNumber}
+Address: ${order.address}
 City: ${order.city}
 State: ${order.state}
-ZIP Code: ${order.zipecode}
+ZIP Code: ${order.zipCode}
+Date of Birth: ${order.dateOfBirth}
 Phone: ${order.phone || "N/A"}
 Email: ${order.email || "N/A"}
 Price: $${order.price || 0}
-Created At: ${formatDate(order.createdAt)}
 ----------------------------------------
 `;
 

@@ -24,7 +24,6 @@ type SignupFormValues = {
 };
 
 export default function Signup() {
-  
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -60,10 +59,13 @@ export default function Signup() {
         username: data.username,
         password: data.password,
       }).unwrap();
-      
+
       toast.success("Account created successfully!");
     } catch (err: any) {
-      toast.error(err?.data?.message || "An error occurred during sign up.");
+      toast.error(
+        err?.data?.errorSources?.[0]?.message ||
+          "An error occurred during sign up."
+      );
     }
 
     setTimeout(() => {
