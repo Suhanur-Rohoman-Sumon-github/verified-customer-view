@@ -9,20 +9,65 @@ import { useGetMyBalanceQuery } from "@/redux/fetures/auth/auth.api";
 import { useCurrentUser } from "@/utils/getCurrentUser";
 import { useMakeAPaymentMutation } from "@/redux/fetures/payment/payment.api";
 import { use } from "i18next";
+import Decimal from "decimal.js";
 
-const coinRates: Record<string, number> = {
-  "USDT Tron (TRC-20)": 1,
-  "Tron TRX": 0.085,
-  "Bitcoin BTC": 0.000027,
-  "Litecoin LTC": 0.0042,
-  "Ethereum ETH": 0.00038,
-  Dogecoin: 2.5,
+import axios from "axios";
+
+// Map your coin names to CoinGecko IDs
+const coinToId: Record<string, string> = {
+  "USDT Tron (TRC-20)": "tether",
+  "Bitcoin BTC": "bitcoin",
+  "Litecoin LTC": "litecoin",
+  "Ethereum ETH": "ethereum",
 };
 
+async function fetchLiveRates(
+  vsCurrency = "usd"
+): Promise<Record<string, number>> {
+  const ids = Object.values(coinToId).join(",");
+  const url = `https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=${vsCurrency}`;
+  const resp = await axios.get(url);
+  const data = resp.data; // e.g. { bitcoin: { usd: 60000 }, ethereum: { usd: 4000 }, ... }
+
+  // Convert to your coinRates structure
+  const liveRates: Record<string, number> = {};
+
+  for (const [coinName, id] of Object.entries(coinToId)) {
+    if (data[id] && data[id][vsCurrency] != null) {
+      liveRates[coinName] = data[id][vsCurrency];
+    }
+  }
+  return liveRates;
+}
+
 export default function Payment() {
+  const [coinRates, setCoinRates] = useState<Record<string, number>>({});
+
+  const coinWallets: Record<string, string> = {
+    "USDT Tron (TRC-20)": "TGhhaFQNZJochD12v3s6i36R89PcfkkqmU",
+    "Bitcoin BTC": "1BtJ6AxMExuryje93vwcwpprq1J578xGS3",
+    "Litecoin LTC": "LTaDSKuFfb1miHB8GVAmzAjMsgGtdfbpDW",
+    "Ethereum ETH": "0x58c319f105d05e5255846ab8f41eb44f8718a9b9",
+  };
+
   const user = useCurrentUser();
 
-  console.log(user);
+  const [loadingRates, setLoadingRates] = useState(true);
+
+  useEffect(() => {
+    const getRates = async () => {
+      try {
+        const rates = await fetchLiveRates("usd");
+        setCoinRates(rates);
+      } catch (err) {
+        console.error("Failed to fetch live coin rates:", err);
+      } finally {
+        setLoadingRates(false);
+      }
+    };
+
+    getRates();
+  }, []);
 
   const [amount, setAmount] = useState("");
   const [selectedMethod, setSelectedMethod] = useState("");
@@ -44,8 +89,6 @@ export default function Payment() {
     }
   );
 
-  console.log(balanceData);
-
   useEffect(() => {
     if (user?._id) {
       refetch();
@@ -53,10 +96,15 @@ export default function Payment() {
   }, [user?._id, refetch]);
 
   const paymentOptions = Object.keys(coinRates);
-  const cryptoAmount =
-    selectedMethod && amount
-      ? (+amount * coinRates[selectedMethod]).toFixed(6)
-      : "0";
+  const cryptoAmount = (() => {
+    if (!selectedMethod || !amount) return "0";
+
+    // For USDT, don’t divide, just use amount
+    if (selectedMethod.includes("USDT")) return new Decimal(amount).toFixed(6);
+
+    // For other coins, divide by live price
+    return new Decimal(amount).div(coinRates[selectedMethod]).toFixed(6);
+  })();
 
   const handleProceedToPayment = () => {
     if (!amount || !selectedMethod) {
@@ -100,7 +148,6 @@ export default function Payment() {
 
       const response = await makeAPayment(paymentData).unwrap();
 
-      console.log("Payment response:", response);
       setStep("success");
     } catch (error) {
       console.error("Payment failed:", error);
@@ -123,14 +170,6 @@ export default function Payment() {
           <CardContent className="p-6">
             {/* Tab Buttons */}
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-6">
-              <div>
-                <div className="text-3xl font-bold text-[#006bff] bg-[#e6f0ff] px-6 py-2 rounded-lg inline-block mb-2">
-                  ${balanceData?.data?.balance.toFixed(2) || "0.00"}
-                </div>
-                <div className="text-[#006bff] font-medium">
-                  Current balance
-                </div>
-              </div>
               <div className="flex flex-col md:flex-row md:items-center gap-2">
                 <Button
                   variant={activeTab === "deposit" ? "default" : "outline"}
@@ -189,7 +228,10 @@ export default function Payment() {
                         className={`justify-start h-auto py-3 px-2 rounded-md text-left ${
                           selectedMethod === option ? "border-green-500" : ""
                         }`}
-                        onClick={() => setSelectedMethod(option)}
+                        onClick={() => {
+                          setSelectedMethod(option);
+                          setWalletAddress(coinWallets[option] || "");
+                        }}
                       >
                         {option}
                       </Button>
@@ -255,10 +297,11 @@ export default function Payment() {
                 {/* Wallet Address with Copy */}
                 <div className="relative w-full max-w-md mb-4">
                   <Input
-                    value={walletAddress || "YourWalletAddress12345"} // default/fake address
+                    value={walletAddress || "YourWalletAddress12345"} // now it comes from state
                     readOnly
                     className="pr-10"
                   />
+
                   <Button
                     size="icon"
                     variant="ghost"
@@ -295,7 +338,7 @@ export default function Payment() {
             )}
 
             {/* Success Step */}
-            {activeTab === "deposit" && step === "success" && (
+            {activeTab === "deposit" && step === "success" && isSuccess && (
               <div className="flex flex-col items-center text-center">
                 <h2 className="text-2xl font-bold text-green-600 mb-4">
                   Success!

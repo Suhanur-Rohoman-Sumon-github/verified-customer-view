@@ -55,7 +55,7 @@ export default function Login() {
         sameSite: "strict",
       });
 
-      console.log(res.data);
+     
 
       // Assume res.data.user contains full user info including name
       dispatch(setUser({ user: res.data.user, token: res.data.accessToken }));
