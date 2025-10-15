@@ -105,14 +105,6 @@ export function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
             align="end"
             style={{ color: "#006bff" }}
           >
-            <DropdownMenuItem className="flex items-center gap-2 hover:bg-[#e6f0ff]">
-              <User size={16} color="#006bff" />
-              <span>{user.username}</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem className="flex items-center gap-2 hover:bg-[#e6f0ff]">
-              <Settings size={16} color="#006bff" />
-              <span>Settings</span>
-            </DropdownMenuItem>
             <DropdownMenuItem className="flex items-center gap-2 text-destructive hover:bg-[#e6f0ff]">
               <LogOut size={16} color="#006bff" />
               <span onClick={handleLogout}>Logout</span>
