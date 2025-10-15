@@ -19,6 +19,7 @@ import { toast } from "sonner";
 
 type SignupFormValues = {
   username: string;
+  email: string; // Added email field
   password: string;
   confirmPassword: string;
 };
@@ -27,7 +28,6 @@ export default function Signup() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
   const [captchaValid, setCaptchaValid] = useState(false);
 
   const [registration, { isLoading }] = useRegistrationMutation();
@@ -40,6 +40,7 @@ export default function Signup() {
   } = useForm<SignupFormValues>({
     defaultValues: {
       username: "",
+      email: "",
       password: "",
       confirmPassword: "",
     },
@@ -53,32 +54,35 @@ export default function Signup() {
       return;
     }
 
-    // TODO: Replace this with actual signup API call
     try {
       const result = await registration({
         username: data.username,
+        email: data.email,
         password: data.password,
       }).unwrap();
 
       toast.success("Account created successfully!");
+      setTimeout(() => {
+        navigate("/login");
+      }, 1000);
     } catch (err: any) {
       toast.error(
         err?.data?.errorSources?.[0]?.message ||
           "An error occurred during sign up."
       );
     }
-
-    setTimeout(() => {
-      navigate("/login");
-    }, 1000);
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold text-primary">
-            SSNMAX
+          <CardTitle className="text-2xl font-bold text-primary flex justify-center items-center">
+            <img
+              src="https://i.ibb.co.com/sdpcV94t/Generated-Image-October-14-2025-4-54-AM-removebg-preview.png"
+              alt="Logo"
+              className="h-32 w-32 object-cover"
+            />
           </CardTitle>
           <CardDescription>Create your account</CardDescription>
         </CardHeader>
@@ -99,6 +103,25 @@ export default function Signup() {
                 <p className="text-red-500 text-sm">
                   {errors.username.message}
                 </p>
+              )}
+            </div>
+
+            {/* Email */}
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                placeholder="Enter your email"
+                {...register("email", {
+                  required: "Email is required",
+                  pattern: {
+                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                    message: "Invalid email address",
+                  },
+                })}
+              />
+              {errors.email && (
+                <p className="text-red-500 text-sm">{errors.email.message}</p>
               )}
             </div>
 

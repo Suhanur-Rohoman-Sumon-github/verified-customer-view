@@ -56,9 +56,11 @@ export function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
     >
       {/* Left section: Logo + Language + Balance */}
       <div className="flex items-center gap-2">
-        <h1 className="text-2xl md:text-3xl font-bold italic text-[#006bff]">
-          SSNMAX
-        </h1>
+        <img
+          src="https://i.ibb.co.com/sdpcV94t/Generated-Image-October-14-2025-4-54-AM-removebg-preview.png"
+          alt=""
+          className="h-14 w-24 object-cover"
+        />
         <div></div>
         {/* Language */}
       </div>

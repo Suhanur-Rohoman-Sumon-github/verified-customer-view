@@ -55,8 +55,6 @@ export default function Login() {
         sameSite: "strict",
       });
 
-     
-
       // Assume res.data.user contains full user info including name
       dispatch(setUser({ user: res.data.user, token: res.data.accessToken }));
 
@@ -74,8 +72,12 @@ export default function Login() {
     <div className="min-h-screen flex items-center justify-center bg-background p-4 relative">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold text-primary">
-            SSNMAX
+          <CardTitle className="text-2xl font-bold text-primary flex justify-center items-cente">
+            <img
+              src="https://i.ibb.co.com/sdpcV94t/Generated-Image-October-14-2025-4-54-AM-removebg-preview.png"
+              alt=""
+              className="h-32 w-32 object-cover"
+            />
           </CardTitle>
           <CardDescription>Sign in to your account</CardDescription>
         </CardHeader>
