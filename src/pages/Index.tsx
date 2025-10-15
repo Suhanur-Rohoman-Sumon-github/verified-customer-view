@@ -44,24 +44,30 @@ const Index = () => {
         })()}
       </div>
     );
-  } else if (activeTab === "news") {
-    referralContent = (
-      <div className="p-8 text-center">
-        <h2 className="text-2xl font-bold mb-4">News</h2>
-        <p className="text-muted-foreground">
-          No news updates available at this time.
-        </p>
-      </div>
-    );
   } else if (activeTab === "referrals") {
     referralContent = <Referral />;
   } else if (activeTab === "rules") {
     referralContent = (
-      <div className="p-8 text-center">
+      <div className="p-8 text-left max-w-3xl mx-auto">
         <h2 className="text-2xl font-bold mb-4">Rules & Guidelines</h2>
-        <p className="text-muted-foreground">
-          Platform rules and guidelines will be displayed here.
-        </p>
+        <ul className="text-gray-700 list-disc list-inside space-y-2">
+          <li>Buy securely: Always verify the products before purchasing.</li>
+          <li>Pay carefully: Ensure you choose the correct payment method.</li>
+          <li>
+            Respect other users: Maintain a polite and professional attitude.
+          </li>
+          <li>
+            Follow platform policies: Adhere to all platform rules and
+            regulations.
+          </li>
+          <li>
+            Report issues promptly: Notify support if you encounter any
+            problems.
+          </li>
+          <li>
+            Protect your account: Keep your login credentials confidential.
+          </li>
+        </ul>
       </div>
     );
   }

@@ -124,8 +124,6 @@ City: ${order.city}
 State: ${order.state}
 ZIP Code: ${order.zipCode}
 Date of Birth: ${order.dateOfBirth}
-Phone: ${order.phone || "N/A"}
-Email: ${order.email || "N/A"}
 Price: $${order.price || 0}
 ----------------------------------------
 `;
