@@ -94,7 +94,7 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
                   className={cn(
                     "w-full flex items-center gap-3 p-3 rounded-md transition-all duration-200",
                     activeTab === item.id
-                      ? "bg-[#006bff]/10 text-[#006bff] shadow-lg"
+                      ? "bg-[#006bff]/10 text-[#006bff] shadow-md"
                       : "hover:bg-[#e6f0ff] text-gray-500"
                   )}
                 >
@@ -132,7 +132,7 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
                   className={cn(
                     "w-full flex items-center gap-3 p-3 rounded-md transition-all duration-200",
                     activeTab === item.id
-                      ? "bg-[#006bff]/10 text-[#006bff] shadow-lg"
+                      ? "bg-[#006bff]/10 text-[#006bff] shadow-sm"
                       : "hover:bg-[#e6f0ff] text-gray-500"
                   )}
                 >

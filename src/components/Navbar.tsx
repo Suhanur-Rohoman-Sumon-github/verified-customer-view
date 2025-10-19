@@ -91,7 +91,7 @@ export function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
         {/* User Dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="p-0">
+            <Button variant="ghost" className="p-0 cursor-pointer">
               <Avatar>
                 <AvatarImage
                   src="https://static.vecteezy.com/system/resources/previews/025/463/773/non_2x/hacker-logo-design-a-mysterious-and-dangerous-hacker-illustration-vector.jpg"
@@ -104,7 +104,7 @@ export function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="w-56 bg-gray-100 border border-[#006bff]"
+            className="w-56 bg-gray-100 border border-[#006bff] cursor-pointer"
             align="end"
             style={{ color: "#006bff" }}
           >

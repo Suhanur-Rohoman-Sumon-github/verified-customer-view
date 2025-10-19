@@ -501,7 +501,7 @@ export function SearchTable() {
                 <table className="w-full border-collapse text-center">
                   <thead className="sticky top-0 bg-[#006bff] text-white">
                     <tr>
-                      <th className="p-2">
+                      <th className="p-2 cursor-pointer">
                         <input
                           type="checkbox"
                           checked={
@@ -539,22 +539,23 @@ export function SearchTable() {
                           key={row._id}
                           className="hover:bg-[#e6f0ff] border-b text-center"
                         >
-                          <td className="p-2">
+                          <td className="p-2 cursor-pointer">
                             <input
+                              className="cursor-pointer"
                               type="checkbox"
                               checked={selectedRows.includes(row._id)}
                               onChange={() => handleRowSelect(row._id)}
                             />
                           </td>
                           <td className="p-2">
-                            {row.firstName.charAt(0).toUpperCase() +
-                              row.firstName.slice(1)}{" "}
-                            {row.lastName.charAt(0).toUpperCase() +
-                              row.lastName.slice(1)}
+                            {row.firstName?.charAt(0).toUpperCase() +
+                              row.firstName?.slice(1)}{" "}
+                            {row.lastName?.charAt(0).toUpperCase() +
+                              row.lastName?.slice(1)}
                           </td>
                           <td className="p-2">
-                            {row.city.charAt(0).toUpperCase() +
-                              row.city.slice(1)}
+                            {row.city?.charAt(0).toUpperCase() +
+                              row.city?.slice(1)}
                           </td>
                           <td className="p-2">{row.state}</td>
                           <td className="p-2">{row.zipCode}</td>
