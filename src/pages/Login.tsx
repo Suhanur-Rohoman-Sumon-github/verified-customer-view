@@ -74,7 +74,7 @@ export default function Login() {
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold text-primary flex justify-center items-cente">
             <img
-              src="https://i.ibb.co.com/sdpcV94t/Generated-Image-October-14-2025-4-54-AM-removebg-preview.png"
+              src="https://i.ibb.co.com/WvsZ05HD/Generated-Image-October-19-2025-12-39-AM.png"
               alt=""
               className="h-32 w-32 object-cover"
             />
