@@ -6,8 +6,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { User, LogOut, Settings, Menu, X } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { User, LogOut, Settings, Menu, X, ShoppingCart } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import { useCurrentUser } from "@/utils/getCurrentUser";
@@ -49,54 +49,53 @@ export function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
   };
 
   return (
-    <div
-      className="fixed top-0 left-0 z-50 w-full bg-gray-100 border-b 
-                 px-3 py-2 flex items-center justify-between gap-2"
-      style={{ color: "#006bff" }}
-    >
-      {/* Left section: Logo + Language + Balance */}
-      <div className="flex items-center gap-2">
+    <div className="fixed top-0 left-0 z-50 w-full bg-gray-100 border-b px-4 py-2 flex items-center justify-between gap-4">
+      {/* Left section */}
+      <div className="flex items-center gap-4">
         <img
           src="https://i.ibb.co.com/WvsZ05HD/Generated-Image-October-19-2025-12-39-AM.png"
-          alt=""
-          className="h-14 w-full "
+          alt="Logo"
+          className="h-14 w-auto"
         />
-        <div></div>
-        {/* Language */}
+        <div className="flex items-center gap-2">
+          <span>Join our Telegram channel</span>
+          <p>
+            <span className="font-semibold">Telegram: </span>
+            <a
+              href="https://t.me/yourchannel"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#006bff] hover:underline"
+            >
+              @YourTelegram
+            </a>
+          </p>
+        </div>
       </div>
 
-      {/* Right section: User + Mobile Menu */}
-      <div className="flex items-center gap-2">
+      {/* Right section */}
+      <div className="flex items-center gap-3">
+        {/* Shopping Cart */}
+
         {/* Balance */}
         <Button
-          style={
-            {
-              // background: "#006bff",
-              // color: "white",
-              // border: "none",
-              // fontWeight: 700,
-              // letterSpacing: "0.03em",
-            }
-          }
           className="rounded-full px-3 py-1 text-sm md:px-5 md:py-2 md:text-base hover:opacity-90 transition shadow-none"
           onClick={handlePaymentClick}
         >
           <span className="opacity-80">Balance:</span>
-          <span className="ml-1 font-bold">${balance?.toFixed(2)}</span>
+          <span className="ml-1 font-bold">${balance?.toFixed(2) || 0}</span>
         </Button>
 
         {/* User Dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost">
-              <Avatar className="">
+            <Button variant="ghost" className="p-0">
+              <Avatar>
                 <AvatarImage
-                  src={
-                    "https://static.vecteezy.com/system/resources/previews/025/463/773/non_2x/hacker-logo-design-a-mysterious-and-dangerous-hacker-illustration-vector.jpg"
-                  }
+                  src="https://static.vecteezy.com/system/resources/previews/025/463/773/non_2x/hacker-logo-design-a-mysterious-and-dangerous-hacker-illustration-vector.jpg"
                   alt={user.username}
                 />
-                <AvatarFallback className=" text-white/90">
+                <AvatarFallback>
                   {user?.username?.substring(0, 2).toUpperCase()}
                 </AvatarFallback>
               </Avatar>

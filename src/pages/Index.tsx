@@ -11,6 +11,9 @@ import DLSSN from "./DLSSN.tsx";
 import DLCoinbase from "./DLCoinbase.tsx";
 import { useCurrentUser } from "@/utils/getCurrentUser.ts";
 import { useLoadUserFromCookie } from "@/utils/useLoadUserFromCookie.ts";
+import CartTable from "@/components/CartTable.tsx";
+import SettingsPage from "@/components/Settings.tsx";
+import SupportPage from "@/components/SupportPage.tsx";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("search");
@@ -32,8 +35,12 @@ const Index = () => {
     referralContent = <OrdersTable />;
   } else if (activeTab === "dlssn") {
     referralContent = <DLSSN />;
-  } else if (activeTab === "dlcoinbase") {
-    referralContent = <DLCoinbase />;
+  } else if (activeTab === "cart") {
+    referralContent = <CartTable />;
+  } else if (activeTab === "settings") {
+    referralContent = <SettingsPage />;
+  } else if (activeTab === "support") {
+    referralContent = <SupportPage />;
   } else if (activeTab === "recharge") {
     referralContent = (
       <div className="p-8 text-center">

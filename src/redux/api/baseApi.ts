@@ -33,7 +33,7 @@ export const baseApi = createApi({
   reducerPath: 'baseApi',
   baseQuery: baseQueryWithoutRefresh,
   endpoints: () => ({}),
-  tagTypes: ['User','VerificationCode',"Category"],
+  tagTypes: ['User','VerificationCode',"Category","SSN","Cart"],
 });
 
 function logOut(): any {

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { Search, ShoppingCart, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -12,6 +13,7 @@ import {
 } from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
+  useAddToCartMutation,
   useBuySSnMutation,
   useGetSSnsQuery,
 } from "@/redux/fetures/ssns/ssn.api";
@@ -19,6 +21,7 @@ import { useCurrentUser } from "@/utils/getCurrentUser";
 import { toast } from "sonner";
 import Spinner from "./spinner/Spinner";
 import SpinnerOverlay from "./spinner/SpinnerOverlay";
+
 
 interface SearchResult {
   _id: string;
@@ -42,6 +45,10 @@ export function SearchTable() {
     zipCode: "",
     dateOfBirthFrom: "",
     dateOfBirthTo: "",
+    base: "",
+    country: "",
+    email: "",
+    phone: "",
     page: 1,
     limit: 10,
   });
@@ -56,12 +63,27 @@ export function SearchTable() {
     refetch();
   }, [filters, refetch]);
 
-  // Helper to update filters
   const updateFilter = (field: string, value: string) => {
     setFilters((prev) => ({ ...prev, [field]: value, page: 1 }));
   };
 
-  // Handle buying SSN
+  // ✅ Toggle individual selection
+  const handleRowSelect = (id: string) => {
+    setSelectedRows((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+    );
+  };
+
+  // ✅ Toggle all selection
+  const handleSelectAll = () => {
+    if (selectedRows.length === data?.data?.length) {
+      setSelectedRows([]);
+    } else {
+      setSelectedRows(data?.data?.map((row: SearchResult) => row._id) || []);
+    }
+  };
+
+  // ✅ Buy single SSN
   const handleBuy = async (ssnId: string) => {
     try {
       await buy({
@@ -69,66 +91,123 @@ export function SearchTable() {
         userId: user?._id,
         price: 0.25,
       }).unwrap();
+
       toast.success("Purchase successful!");
-      refetch(); // refresh data instantly
-    } catch (error) {
+
+      // ✅ Small delay ensures server updates before refetch
+      setTimeout(() => {
+        refetch();
+      }, 500);
+    } catch (error: any) {
       console.error("Buy failed:", error);
-      toast.error("Failed to purchase. Please try again.");
+      toast.error(
+        error?.data?.message || "Failed to purchase. Please try again."
+      );
     }
   };
 
-  // Handle pagination
+  // ✅ Buy selected SSNs
+  const handleBuySelected = async () => {
+    if (selectedRows.length === 0) return toast.error("No rows selected.");
+    try {
+      for (const id of selectedRows) {
+        await buy({
+          ssnId: id,
+          userId: user?._id,
+          price: 0.25,
+        }).unwrap();
+      }
+      toast.success("Selected SSNs purchased successfully!");
+      refetch();
+    } catch (error) {
+      toast.error("Failed to purchase selected SSNs.");
+    }
+  };
+
+  // ✅ Add selected SSNs to cart (placeholder)
+  const [addToCart, { isLoading: isAddingToCart }] = useAddToCartMutation();
+
+  const handleAddToCart = async () => {
+    if (selectedRows.length === 0) return toast.error("No rows selected.");
+
+    if (!user?._id) return toast.error("User not logged in.");
+
+    try {
+      await addToCart({
+        userId: user._id,
+        ssnIds: selectedRows,
+      }).unwrap();
+
+      toast.success(`${selectedRows.length} SSNs added to cart.`);
+    } catch (error: any) {
+      console.error("Add to cart failed:", error);
+      toast.error(
+        error?.data?.message || "Failed to add to cart. Please try again."
+      );
+    }
+  };
+
+  // ✅ Handle pagination
   const handlePageChange = (newPage: number) => {
     if (!data?.meta) return;
     if (newPage < 1 || newPage > data.meta.totalPage) return;
     setFilters((prev) => ({ ...prev, page: newPage }));
   };
 
-  // Validate text inputs (letters only)
-  const validateText = (value: string) => value.replace(/[^a-zA-Z\s]/g, "");
+  // ✅ Handle entries per page
+  const handleEntriesChange = (limit: number) => {
+    setFilters((prev) => ({ ...prev, limit, page: 1 }));
+  };
 
-  // Generate year options for DOB filter
+  const validateText = (value: string) => value.replace(/[^a-zA-Z\s]/g, "");
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 100 }, (_, i) => `${currentYear - i}`);
 
   return (
     <div className="space-y-6">
-      {/* Filter Card */}
+      {/* Filter Card */}{" "}
       <Card className="bg-gray-100 text-[#006bff] border-0">
+        {" "}
         <CardHeader>
-          <CardTitle>Filter</CardTitle>
-        </CardHeader>
+          {" "}
+          <CardTitle>Filter</CardTitle>{" "}
+        </CardHeader>{" "}
         <CardContent>
+          {" "}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 mb-4">
+            {" "}
             <Input
               placeholder="First Name"
               value={filters.firstName}
               onChange={(e) =>
                 updateFilter("firstName", validateText(e.target.value))
               }
-            />
+            />{" "}
             <Input
               placeholder="Last Name"
               value={filters.lastName}
               onChange={(e) =>
                 updateFilter("lastName", validateText(e.target.value))
               }
-            />
+            />{" "}
             <Input
               placeholder="City"
               value={filters.city}
               onChange={(e) =>
                 updateFilter("city", validateText(e.target.value))
               }
-            />
+            />{" "}
             <Select
               value={filters.state}
               onValueChange={(value) => updateFilter("state", value)}
             >
+              {" "}
               <SelectTrigger>
-                <SelectValue placeholder="Select State" />
-              </SelectTrigger>
+                {" "}
+                <SelectValue placeholder="Select State" />{" "}
+              </SelectTrigger>{" "}
               <SelectContent>
+                {" "}
                 {[
                   "AL",
                   "AK",
@@ -182,63 +261,152 @@ export function SearchTable() {
                   "WY",
                 ].map((state) => (
                   <SelectItem key={state} value={state}>
-                    {state}
+                    {" "}
+                    {state}{" "}
                   </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+                ))}{" "}
+              </SelectContent>{" "}
+            </Select>{" "}
             <Input
               placeholder="ZIP"
               value={filters.zipCode}
               onChange={(e) =>
                 updateFilter("zipCode", e.target.value.replace(/[^0-9]/g, ""))
               }
-            />
-
-            {/* Year Picker for DOB */}
-            <div className="flex gap-2">
-              <Select
-                value={filters.dateOfBirthFrom}
-                onValueChange={(value) =>
-                  updateFilter("dateOfBirthFrom", value)
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="From Year" />
-                </SelectTrigger>
-                <SelectContent>
-                  {years.map((year) => (
-                    <SelectItem key={year} value={year}>
-                      {year}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Select
-                value={filters.dateOfBirthTo}
-                onValueChange={(value) => updateFilter("dateOfBirthTo", value)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="To Year" />
-                </SelectTrigger>
-                <SelectContent>
-                  {years.map((year) => (
-                    <SelectItem key={year} value={year}>
-                      {year}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
+            />{" "}
+            {/* Year Picker for DOB */} {/* Year Picker for DOB */}{" "}
+            {/* Year Picker for DOB */}{" "}
+            <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 col-span-2">
+              {" "}
+              <div className="flex items-center gap-2 w-full">
+                {" "}
+                <Select
+                  value={filters.dateOfBirthFrom}
+                  onValueChange={(value) =>
+                    updateFilter("dateOfBirthFrom", value)
+                  }
+                >
+                  {" "}
+                  <SelectTrigger className="min-w-[160px] w-full md:w-[180px]">
+                    {" "}
+                    <SelectValue placeholder="DOB From" />{" "}
+                  </SelectTrigger>{" "}
+                  <SelectContent>
+                    {" "}
+                    {years.map((year) => (
+                      <SelectItem key={year} value={year}>
+                        {" "}
+                        {year}{" "}
+                      </SelectItem>
+                    ))}{" "}
+                  </SelectContent>{" "}
+                </Select>{" "}
+                <span className="text-[#006bff]">-</span>{" "}
+                <Select
+                  value={filters.dateOfBirthTo}
+                  onValueChange={(value) =>
+                    updateFilter("dateOfBirthTo", value)
+                  }
+                >
+                  {" "}
+                  <SelectTrigger className="min-w-[160px] w-full md:w-[180px]">
+                    {" "}
+                    <SelectValue placeholder="DOB To" />{" "}
+                  </SelectTrigger>{" "}
+                  <SelectContent>
+                    {" "}
+                    {years.map((year) => (
+                      <SelectItem key={year} value={year}>
+                        {" "}
+                        {year}{" "}
+                      </SelectItem>
+                    ))}{" "}
+                  </SelectContent>{" "}
+                </Select>{" "}
+              </div>{" "}
+            </div>{" "}
+            {/* 🔹 Select Base Dropdown */}{" "}
+            <Select
+              value={(filters as any).base || ""}
+              onValueChange={(value) => updateFilter("base", value)}
+            >
+              {" "}
+              <SelectTrigger className="w-[180px]">
+                {" "}
+                <SelectValue placeholder="Select Base" />{" "}
+              </SelectTrigger>{" "}
+              <SelectContent>
+                {" "}
+                <SelectItem value="Any">Any</SelectItem>{" "}
+                <SelectItem value="High Credit Score">
+                  {" "}
+                  High Credit Score{" "}
+                </SelectItem>{" "}
+                <SelectItem value="USA DL">USA DL</SelectItem>{" "}
+                <SelectItem value="SSNMax premium">SSNMax Premium</SelectItem>{" "}
+                <SelectItem value="SSN Max">SSN Max</SelectItem>{" "}
+              </SelectContent>{" "}
+            </Select>{" "}
+            {/* 🔹 Select Country Dropdown */}{" "}
+            <Select
+              value={(filters as any).country || ""}
+              onValueChange={(value) => updateFilter("country", value)}
+            >
+              {" "}
+              <SelectTrigger className="w-[180px]">
+                {" "}
+                <SelectValue placeholder="Select Country" />{" "}
+              </SelectTrigger>{" "}
+              <SelectContent>
+                {" "}
+                <SelectItem value="USA">USA</SelectItem>{" "}
+                <SelectItem value="Canada">Canada</SelectItem>{" "}
+                <SelectItem value="UK">UK</SelectItem>{" "}
+                <SelectItem value="Germany">Germany</SelectItem>{" "}
+                <SelectItem value="Australia">Australia</SelectItem>{" "}
+              </SelectContent>{" "}
+            </Select>{" "}
+            <Select
+              value={(filters as any).email || ""}
+              onValueChange={(value) => updateFilter("email", value)}
+            >
+              {" "}
+              <SelectTrigger className="w-[150px]">
+                {" "}
+                <SelectValue placeholder="Email" />{" "}
+              </SelectTrigger>{" "}
+              <SelectContent>
+                {" "}
+                <SelectItem value="Yes">Yes</SelectItem>{" "}
+                <SelectItem value="No">No</SelectItem>{" "}
+              </SelectContent>{" "}
+            </Select>{" "}
+            {/* 🔹 Phone (Yes / No) */}{" "}
+            <Select
+              value={(filters as any).phone || ""}
+              onValueChange={(value) => updateFilter("phone", value)}
+            >
+              {" "}
+              <SelectTrigger className="">
+                {" "}
+                <SelectValue placeholder="Phone" />{" "}
+              </SelectTrigger>{" "}
+              <SelectContent>
+                {" "}
+                <SelectItem value="Yes">Yes</SelectItem>{" "}
+                <SelectItem value="No">No</SelectItem>{" "}
+              </SelectContent>{" "}
+            </Select>{" "}
+          </div>{" "}
           <div className="flex gap-2">
+            {" "}
             <Button
               className="flex items-center gap-2 bg-[#006bff] hover:bg-[#0056cc] text-white"
               onClick={() => refetch()}
             >
-              <Search size={16} /> Search
-            </Button>
+              {" "}
+              <Search size={16} /> Search{" "}
+            </Button>{" "}
             <Button
               variant="outline"
               className="border-[#006bff] text-[#006bff] hover:bg-[#006bff]/10"
@@ -251,18 +419,22 @@ export function SearchTable() {
                   zipCode: "",
                   dateOfBirthFrom: "",
                   dateOfBirthTo: "",
+                  base: "",
+                  country: "",
+                  email: "",
+                  phone: "",
                   page: 1,
                   limit: 10,
                 })
               }
             >
-              Clear
-            </Button>
-          </div>
-        </CardContent>
+              {" "}
+              Clear{" "}
+            </Button>{" "}
+          </div>{" "}
+        </CardContent>{" "}
       </Card>
-
-      {/* Results Table */}
+      {/* --- Search Results --- */}
       {isBuying && <SpinnerOverlay message="Processing your purchase..." />}
       {isLoading ? (
         <div className="flex justify-center items-center">
@@ -272,35 +444,85 @@ export function SearchTable() {
         <Card className="flex-1 bg-gray-100 text-[#006bff] border-0">
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
-              <span>Search Results</span>
               <span className="text-sm font-normal text-[#006bff]/70">
                 {selectedRows.length > 0
                   ? `${selectedRows.length} selected`
                   : `${data?.meta?.total ?? 0} total`}
               </span>
             </CardTitle>
+            <div className="flex flex-wrap justify-between items-center gap-3 mt-4">
+              {/* Buttons */}
+              <div className="flex gap-2">
+                <Button
+                  className="bg-[#006bff] hover:bg-[#0056cc] text-white"
+                  onClick={handleAddToCart}
+                  disabled={selectedRows.length === 0}
+                >
+                  Add to Cart Selected
+                </Button>
+                <Button
+                  className="bg-green-600 hover:bg-green-700 text-white"
+                  onClick={handleBuySelected}
+                  disabled={selectedRows.length === 0}
+                >
+                  Buy Selected
+                </Button>
+              </div>
+
+              {/* Entries per page */}
+              <div className="flex items-center gap-2 text-[#006bff]">
+                <span>Entries per page:</span>
+                <Select
+                  value={String(filters.limit)}
+                  onValueChange={(value) => handleEntriesChange(Number(value))}
+                >
+                  <SelectTrigger className="w-[80px]">
+                    <SelectValue placeholder="10" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {[10, 25, 50, 100].map((n) => (
+                      <SelectItem key={n} value={String(n)}>
+                        {n}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
           </CardHeader>
+
           <CardContent>
             <ScrollArea className="h-[600px]">
               <div className="overflow-x-auto">
                 <table className="w-full border-collapse text-center">
                   <thead className="sticky top-0 bg-[#006bff] text-white">
                     <tr>
+                      <th className="p-2">
+                        <input
+                          type="checkbox"
+                          checked={
+                            selectedRows.length === data?.data?.length &&
+                            data?.data?.length > 0
+                          }
+                          onChange={handleSelectAll}
+                        />
+                      </th>
                       <th className="p-2">Full Name</th>
                       <th className="p-2">City</th>
                       <th className="p-2">State</th>
                       <th className="p-2">ZIP</th>
-                      <th className="p-2">Year</th>
+                      <th className="p-2">DOB</th>
                       <th className="p-2">Country</th>
                       <th className="p-2">Price</th>
                       <th className="p-2">Buy</th>
                     </tr>
                   </thead>
+
                   <tbody>
                     {data?.data?.length === 0 ? (
                       <tr>
                         <td
-                          colSpan={8}
+                          colSpan={9}
                           className="text-center py-4 text-gray-500"
                         >
                           No results found
@@ -312,6 +534,13 @@ export function SearchTable() {
                           key={row._id}
                           className="hover:bg-[#e6f0ff] border-b text-center"
                         >
+                          <td className="p-2">
+                            <input
+                              type="checkbox"
+                              checked={selectedRows.includes(row._id)}
+                              onChange={() => handleRowSelect(row._id)}
+                            />
+                          </td>
                           <td className="p-2">
                             {row.firstName} {row.lastName}
                           </td>
@@ -344,7 +573,9 @@ export function SearchTable() {
               </div>
             </ScrollArea>
 
-            {/* Pagination */}
+            {/* --- Actions Section --- */}
+
+            {/* --- Pagination --- */}
             {data?.meta && (
               <div className="flex justify-center gap-4 items-center mt-4 text-sm text-[#006bff]">
                 <Button

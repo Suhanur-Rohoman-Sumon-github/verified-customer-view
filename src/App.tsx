@@ -12,6 +12,7 @@ import "./lib/i18n";
 import { Provider } from "react-redux";
 import { store } from "./redux/store";
 import ProtectedRoute from "./components/routes/ProtectedRoute";
+import CartTable from "./components/CartTable";
 
 const App = () => (
   <Provider store={store}>
@@ -38,6 +39,14 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <Payment />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/cart"
+              element={
+                <ProtectedRoute>
+                  <CartTable />
                 </ProtectedRoute>
               }
             />

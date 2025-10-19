@@ -3,15 +3,18 @@ import { useTranslation } from "react-i18next";
 import {
   Search,
   ShoppingCart,
-  Newspaper,
-  Users,
-  Shield,
+  PlusCircle,
+  Settings,
+  Headset,
+  ShieldCheck,
+  Gift,
+  LogOut,
   Menu,
   X,
-  Plus,
-  Coins,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 
 interface AppSidebarProps {
   activeTab: string;
@@ -23,29 +26,39 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const { t } = useTranslation();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    Cookies.remove("accessToken");
+    Cookies.remove("refreshToken");
+    navigate("/login");
+  };
 
   const menuItems = [
     { id: "search", title: t("sidebar.search"), icon: Search },
     { id: "orders", title: t("sidebar.orders"), icon: ShoppingCart },
-    { id: "recharge", title: t("sidebar.recharge"), icon: Plus },
-    { id: "referrals", title: t("sidebar.referrals"), icon: Users },
-    { id: "rules", title: t("sidebar.rules"), icon: Shield },
+    { id: "recharge", title: t("sidebar.recharge"), icon: PlusCircle },
+    { id: "cart", title: t("cart"), icon: ShoppingCart },
+    { id: "settings", title: t("Settings"), icon: Settings },
+    { id: "support", title: t("Support"), icon: Headset },
+    { id: "rules", title: t("sidebar.rules"), icon: ShieldCheck },
+    { id: "referrals", title: t("sidebar.referrals"), icon: Gift },
   ];
 
   return (
     <>
-      {/* ✅ Mobile Toggle Button */}
+      {/* Mobile Toggle Button */}
       <button
-        className="md:hidden fixed  left-4 z-30 text-[#006bff]  "
+        className="md:hidden fixed left-4 z-30 text-[#006bff]"
         onClick={() => setMobileOpen((v) => !v)}
       >
         {mobileOpen ? <X size={24} /> : <Menu size={24} />}
       </button>
 
-      {/* ✅ Mobile Sidebar */}
+      {/* Mobile Sidebar */}
       <div
         className={cn(
-          "fixed inset-0 z-40  transition-opacity duration-300 md:hidden",
+          "fixed inset-0 z-40 transition-opacity duration-300 md:hidden",
           mobileOpen
             ? "opacity-100 pointer-events-auto"
             : "opacity-0 pointer-events-none"
@@ -68,7 +81,7 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
           </button>
         </div>
 
-        <nav className="flex-1 p-4 overflow-y-auto">
+        <nav className="flex-1 p-4 overflow-y-auto flex flex-col justify-between">
           <ul className="space-y-2">
             {menuItems.map((item) => (
               <li key={item.id}>
@@ -90,17 +103,26 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
               </li>
             ))}
           </ul>
+
+          {/* Logout button */}
+          <button
+            onClick={handleLogout}
+            className="mt-4 w-full flex items-center gap-3 p-3 rounded-md transition-all duration-200 text-red-600 hover:bg-red-100"
+          >
+            <LogOut size={20} />
+            <span className="font-medium">Logout</span>
+          </button>
         </nav>
       </div>
 
-      {/* ✅ Desktop Sidebar */}
+      {/* Desktop Sidebar */}
       <div
         className={cn(
           "hidden md:flex h-screen transition-all duration-300 flex-col bg-gray-100 text-[#006bff]",
           isCollapsed ? "w-16" : "w-64"
         )}
       >
-        <nav className="flex-1 p-4">
+        <nav className="flex-1 p-4 flex flex-col justify-between">
           <ul className="space-y-2">
             {menuItems.map((item) => (
               <li key={item.id}>
@@ -120,7 +142,17 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
                 </button>
               </li>
             ))}
+
+            <button
+              onClick={handleLogout}
+              className="mt-4 w-full flex items-center gap-3 p-3 rounded-md transition-all duration-200 text-red-600 hover:bg-red-100"
+            >
+              <LogOut size={20} />
+              {!isCollapsed && <span className="font-medium">Logout</span>}
+            </button>
           </ul>
+
+          {/* Logout button */}
         </nav>
       </div>
     </>
