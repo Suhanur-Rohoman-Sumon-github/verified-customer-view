@@ -61,18 +61,22 @@ export default function CartTable() {
   return (
     <Card className="bg-gray-100 text-[#006bff] border-0">
       <CardHeader>
-        <p className="text-red-600 font-semibold mb-4 text-center">
-          Please buy these SSNs immediately or other users may purchase your
-          selected SSNs. Be careful!
-        </p>
-        <CardTitle>My Cart ({data?.data?.length || 0})</CardTitle>
+        {data?.data?.length === 1 && (
+          <div>
+            <p className="text-red-600 font-semibold mb-4 text-center">
+              Please buy these SSNs immediately or other users may purchase your
+              selected SSNs. Be careful!
+            </p>
+            <CardTitle>My Cart ({data?.data?.length || 0})</CardTitle>
+          </div>
+        )}
       </CardHeader>
       <CardContent>
         {isLoading ? (
           <div className="flex justify-center items-center">
             <Spinner />
           </div>
-        ) : data?.length === 0 ? (
+        ) : data?.data?.length === 0 ? (
           <p className="text-center text-gray-500 py-4">Your cart is empty</p>
         ) : (
           <ScrollArea className="h-[500px]">

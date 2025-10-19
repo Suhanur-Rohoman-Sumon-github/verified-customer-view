@@ -171,7 +171,7 @@ export function SearchTable() {
         {" "}
         <CardHeader>
           {" "}
-          <CardTitle>Search</CardTitle>{" "}
+          <CardTitle>Filter</CardTitle>{" "}
         </CardHeader>{" "}
         <CardContent>
           {" "}
@@ -410,7 +410,7 @@ export function SearchTable() {
             </Button>{" "}
             <Button
               variant="outline"
-              className="border-[#006bff] text-[#006bff] hover:bg-[#006bff]/10"
+              className="border-[#006bff]  hover:bg-[#006bff]/10"
               onClick={() =>
                 setFilters({
                   firstName: "",
@@ -442,7 +442,7 @@ export function SearchTable() {
           <Spinner />
         </div>
       ) : (
-        <Card className="flex-1 bg-gray-100 text-[#006bff] border-0">
+        <Card className="flex-1 bg-gray-100 text-[#1f2937] border-0">
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
               <span className="text-sm font-normal text-[#006bff]/70">
@@ -464,7 +464,7 @@ export function SearchTable() {
 
                 <Button
                   className="bg-green-600 hover:bg-green-700 text-white"
-                  onClick={() => handleBuySelected()} // ✅ Wrap in arrow function
+                  onClick={() => handleBuySelected()}
                   disabled={selectedRows.length === 0}
                 >
                   Buy Selected
@@ -545,9 +545,15 @@ export function SearchTable() {
                             />
                           </td>
                           <td className="p-2">
-                            {row.firstName} {row.lastName}
+                            {row.firstName.charAt(0).toUpperCase() +
+                              row.firstName.slice(1)}{" "}
+                            {row.lastName.charAt(0).toUpperCase() +
+                              row.lastName.slice(1)}
                           </td>
-                          <td className="p-2">{row.city}</td>
+                          <td className="p-2">
+                            {row.city.charAt(0).toUpperCase() +
+                              row.city.slice(1)}
+                          </td>
                           <td className="p-2">{row.state}</td>
                           <td className="p-2">{row.zipCode}</td>
                           <td className="p-2">

@@ -57,7 +57,7 @@ export function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
           alt="Logo"
           className="h-14 w-auto"
         />
-        <div className="">
+        <div className="text-lg font-semibold text-[]">
           <Marquee gradient={false} speed={30}>
             <span>Join our Telegram channel</span>
             <span className="ml-4 font-semibold">
@@ -108,6 +108,10 @@ export function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
             align="end"
             style={{ color: "#006bff" }}
           >
+            <DropdownMenuItem className="flex items-center gap-2 text-destructive hover:bg-[#e6f0ff]">
+              <User size={16} color="#006bff" />
+              {user?.username}
+            </DropdownMenuItem>
             <DropdownMenuItem className="flex items-center gap-2 text-destructive hover:bg-[#e6f0ff]">
               <Settings size={16} color="#006bff" />
               <Link to="/settings">{"settings"}</Link>
