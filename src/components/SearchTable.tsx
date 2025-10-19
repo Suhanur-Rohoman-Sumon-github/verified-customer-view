@@ -459,14 +459,16 @@ export function SearchTable() {
                   onClick={() => handleAddToCart()}
                   disabled={selectedRows.length === 0}
                 >
+                  <ShoppingCart size={16} />
                   Add to Cart Selected
                 </Button>
 
                 <Button
-                  className="bg-green-600 hover:bg-green-700 text-white"
+                  className="bg-[#006bff] hover:bg-[#0056cc] text-white"
                   onClick={() => handleBuySelected()}
                   disabled={selectedRows.length === 0}
                 >
+                  <ShoppingCart size={16} />
                   Buy Selected
                 </Button>
               </div>
