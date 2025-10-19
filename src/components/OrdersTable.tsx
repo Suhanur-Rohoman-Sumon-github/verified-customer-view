@@ -54,7 +54,7 @@ export function OrdersTable() {
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             <span>My Purchased SSNs</span>
-            <div className="flex gap-2 items-center">
+            <div className="flex gaitems-center">
               <span className="text-sm font-normal text-gray-400">
                 {selectedRows.length > 0
                   ? `${selectedRows.length} selected`
@@ -69,15 +69,15 @@ export function OrdersTable() {
               <table className="w-full border-collapse">
                 <thead className="sticky top-0 bg-[#006bff] text-white text-center">
                   <tr>
-                    <th className=" p-2 text-base font-medium">Name</th>
-                    <th className=" p-2 text-base font-medium">SSN</th>
-                    <th className=" p-2 text-base font-medium">Address</th>
-                    <th className=" p-2 text-base font-medium">City</th>
-                    <th className=" p-2 text-base font-medium">State</th>
-                    <th className=" p-2 text-base font-medium">ZIP</th>
-                    <th className=" p-2 text-base font-medium">DOB</th>
-                    <th className=" p-2 text-base font-medium">Price</th>
-                    <th className="text-right p-2 text-base font-medium">
+                    <th className=" text-base font-medium">Name</th>
+                    <th className=" text-base font-medium">SSN</th>
+                    <th className=" text-base font-medium">Address</th>
+                    <th className=" text-base font-medium">City</th>
+                    <th className=" text-base font-medium">State</th>
+                    <th className=" text-base font-medium">ZIP</th>
+                    <th className=" text-base font-medium">DOB</th>
+                    <th className=" text-base font-medium">Price</th>
+                    <th className="text-right text-base font-medium">
                       Download
                     </th>
                   </tr>
@@ -98,14 +98,20 @@ export function OrdersTable() {
                         key={order._id}
                         className="border-b hover:bg-[#e6f0ff] text-sm text-[#222]  text-center"
                       >
-                        <td className="p-2 text-base ">
+                        <td className="text-base  uppercase">
                           {order.firstName} {order.lastName}
                         </td>
-                        <td className="p-2 text-base">{order.ssnNumber}</td>
-                        <td className="p-2 text-base">{order.address}</td>
-                        <td className="p-2 text-base">{order.city}</td>
-                        <td className="p-2 text-base">{order.state}</td>
-                        <td className="p-2 text-base">{order.zipCode}</td>
+                        <td className="text-base">{order.ssnNumber}</td>
+                        <td className="text-base uppercase">
+                          {order.address}
+                        </td>
+                        <td className="text-base uppercase">
+                          {order.city}
+                        </td>
+                        <td className="text-base">{order.state}</td>
+                        <td className="text-base uppercase">
+                          {order.zipCode}
+                        </td>
                         <td className="p-2">
                           {order.dateOfBirth
                             ? new Date(order.dateOfBirth).toLocaleDateString(
@@ -113,10 +119,10 @@ export function OrdersTable() {
                               )
                             : "N/A"}
                         </td>
-                        <td className="p-2 text-base ">
+                        <td className="text-base ">
                           ${order.price?.toFixed(2)}
                         </td>
-                        <td className="p-2 text-right">
+                        <td className="text-right">
                           <Download
                             size={18}
                             className="inline-block text-[#006bff] opacity-70 hover:opacity-100 cursor-pointer"

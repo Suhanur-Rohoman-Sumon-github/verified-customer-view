@@ -49,7 +49,7 @@ export function SearchTable() {
     email: "",
     phone: "",
     page: 1,
-    limit: 10,
+    limit: 14,
   });
 
   const user = useCurrentUser();
@@ -275,11 +275,30 @@ export function SearchTable() {
                 updateFilter("zipCode", e.target.value.replace(/[^0-9]/g, ""))
               }
             />{" "}
-            {/* Year Picker for DOB */} {/* Year Picker for DOB */}{" "}
-            {/* Year Picker for DOB */}{" "}
-            <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 col-span-2">
+            <Select
+              value={(filters as any).base || ""}
+              onValueChange={(value) => updateFilter("base", value)}
+            >
               {" "}
-              <div className="flex items-center gap-2 w-full">
+              <SelectTrigger className="w-[180px]">
+                {" "}
+                <SelectValue placeholder="Select Base" />{" "}
+              </SelectTrigger>{" "}
+              <SelectContent>
+                {" "}
+                <SelectItem value="Any">Any</SelectItem>{" "}
+                <SelectItem value="High Credit Score">
+                  {" "}
+                  High Credit Score{" "}
+                </SelectItem>{" "}
+                <SelectItem value="USA DL">USA DL</SelectItem>{" "}
+                <SelectItem value="SSNMax premium">SSNMax Premium</SelectItem>{" "}
+                <SelectItem value="SSN Max">SSN Max</SelectItem>{" "}
+              </SelectContent>{" "}
+            </Select>{" "}
+            <div className="flex flex-col md:flex-row md:items-center gamd:gap-4 col-span-2">
+              {" "}
+              <div className="flex items-center gaw-full">
                 {" "}
                 <Select
                   value={filters.dateOfBirthFrom}
@@ -326,29 +345,7 @@ export function SearchTable() {
                 </Select>{" "}
               </div>{" "}
             </div>{" "}
-            {/* 🔹 Select Base Dropdown */}{" "}
-            <Select
-              value={(filters as any).base || ""}
-              onValueChange={(value) => updateFilter("base", value)}
-            >
-              {" "}
-              <SelectTrigger className="w-[180px]">
-                {" "}
-                <SelectValue placeholder="Select Base" />{" "}
-              </SelectTrigger>{" "}
-              <SelectContent>
-                {" "}
-                <SelectItem value="Any">Any</SelectItem>{" "}
-                <SelectItem value="High Credit Score">
-                  {" "}
-                  High Credit Score{" "}
-                </SelectItem>{" "}
-                <SelectItem value="USA DL">USA DL</SelectItem>{" "}
-                <SelectItem value="SSNMax premium">SSNMax Premium</SelectItem>{" "}
-                <SelectItem value="SSN Max">SSN Max</SelectItem>{" "}
-              </SelectContent>{" "}
-            </Select>{" "}
-            {/* 🔹 Select Country Dropdown */}{" "}
+            {/* 🔹 Select Base Dropdown */} {/* 🔹 Select Country Dropdown */}{" "}
             <Select
               value={(filters as any).country || ""}
               onValueChange={(value) => updateFilter("country", value)}
@@ -372,7 +369,7 @@ export function SearchTable() {
               onValueChange={(value) => updateFilter("email", value)}
             >
               {" "}
-              <SelectTrigger className="w-[150px]">
+              <SelectTrigger className="w-[140px]">
                 {" "}
                 <SelectValue placeholder="Email" />{" "}
               </SelectTrigger>{" "}
@@ -398,11 +395,23 @@ export function SearchTable() {
                 <SelectItem value="No">No</SelectItem>{" "}
               </SelectContent>{" "}
             </Select>{" "}
+            <Select
+              value={(filters as any).price || ""}
+              onValueChange={(value) => updateFilter("price", value)}
+            >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select Price" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="fromHigher">From Higher</SelectItem>
+                <SelectItem value="fromLower">From Lower</SelectItem>
+              </SelectContent>
+            </Select>
           </div>{" "}
-          <div className="flex gap-2">
+          <div className="flex gap-4">
             {" "}
             <Button
-              className="flex items-center gap-2 bg-[#006bff] hover:bg-[#0056cc] text-white"
+              className="flex items-center bg-[#006bff] hover:bg-[#0056cc] text-white"
               onClick={() => refetch()}
             >
               {" "}
@@ -425,7 +434,7 @@ export function SearchTable() {
                   email: "",
                   phone: "",
                   page: 1,
-                  limit: 10,
+                  limit: 14,
                 })
               }
             >
@@ -445,7 +454,7 @@ export function SearchTable() {
         <Card className="flex-1 bg-gray-100 text-[#1f2937] border-0">
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
-              <span className="text-sm font-normal text-[#006bff]/70">
+              <span className="text-sm font-normal ">
                 {selectedRows.length > 0
                   ? `${selectedRows.length} selected`
                   : `${data?.meta?.total ?? 0} total`}
@@ -464,7 +473,7 @@ export function SearchTable() {
                 </Button>
 
                 <Button
-                  className="bg-[#006bff] hover:bg-[#0056cc] text-white"
+                  className="border-[#0056cc] hover:bg-[#0056cc] text-white"
                   onClick={() => handleBuySelected()}
                   disabled={selectedRows.length === 0}
                 >
@@ -474,17 +483,17 @@ export function SearchTable() {
               </div>
 
               {/* Entries per page */}
-              <div className="flex items-center gap-2 text-[#006bff]">
+              <div className="flex items-center gatext-[#006bff]">
                 <span>Entries per page:</span>
                 <Select
                   value={String(filters.limit)}
                   onValueChange={(value) => handleEntriesChange(Number(value))}
                 >
                   <SelectTrigger className="w-[80px]">
-                    <SelectValue placeholder="10" />
+                    <SelectValue placeholder="14" />
                   </SelectTrigger>
                   <SelectContent>
-                    {[10, 25, 50, 100].map((n) => (
+                    {[14, 25, 50, 100].map((n) => (
                       <SelectItem key={n} value={String(n)}>
                         {n}
                       </SelectItem>
@@ -501,7 +510,7 @@ export function SearchTable() {
                 <table className="w-full border-collapse text-center">
                   <thead className="sticky top-0 bg-[#006bff] text-white">
                     <tr>
-                      <th className="p-2 cursor-pointer">
+                      <th className="cursor-pointer">
                         <input
                           type="checkbox"
                           checked={
@@ -511,15 +520,15 @@ export function SearchTable() {
                           onChange={handleSelectAll}
                         />
                       </th>
-                      <th className="p-2">Full Name</th>
-                      <th className="p-2">City</th>
-                      <th className="p-2">State</th>
-                      <th className="p-2">ZIP</th>
-                      <th className="p-2">DOB</th>
-                      <th className="p-2">Country</th>
-                      <th className="p-2">Price</th>
-                      <th className="p-2">Add to Cart</th>
-                      <th className="p-2">Buy</th>
+                      <th className="py-1">Full Name</th>
+                      <th className="">City</th>
+                      <th className="">State</th>
+                      <th className="">ZIP</th>
+                      <th className="">DOB</th>
+                      <th className="">Country</th>
+                      <th className="">Price</th>
+                      <th className="">Add to Cart</th>
+                      <th className="">Buy</th>
                     </tr>
                   </thead>
 
@@ -537,9 +546,9 @@ export function SearchTable() {
                       data?.data?.map((row: SearchResult) => (
                         <tr
                           key={row._id}
-                          className="hover:bg-[#e6f0ff] border-b text-center"
+                          className="hover:bg-[#e6f0ff] border-b text-center uppercase"
                         >
-                          <td className="p-2 cursor-pointer">
+                          <td className="cursor-pointer">
                             <input
                               className="cursor-pointer"
                               type="checkbox"
@@ -547,28 +556,28 @@ export function SearchTable() {
                               onChange={() => handleRowSelect(row._id)}
                             />
                           </td>
-                          <td className="p-2">
+                          <td className="py-2">
                             {row.firstName?.charAt(0).toUpperCase() +
                               row.firstName?.slice(1)}{" "}
                             {row.lastName?.charAt(0).toUpperCase() +
                               row.lastName?.slice(1)}
                           </td>
-                          <td className="p-2">
+                          <td className="uppercase">
                             {row.city?.charAt(0).toUpperCase() +
                               row.city?.slice(1)}
                           </td>
-                          <td className="p-2">{row.state}</td>
-                          <td className="p-2">{row.zipCode}</td>
-                          <td className="p-2">
+                          <td className="">{row.state}</td>
+                          <td className="">{row.zipCode}</td>
+                          <td className="">
                             {row.dateOfBirth
                               ? new Date(row.dateOfBirth).toLocaleDateString(
                                   "en-CA"
                                 )
                               : "N/A"}
                           </td>
-                          <td className="p-2">{row.country || "USA"}</td>
-                          <td className="p-2">${row.price || 0.25}</td>
-                          <td className="p-2">
+                          <td className="">{row.country || "USA"}</td>
+                          <td className="">${row.price || 0.25}</td>
+                          <td className="">
                             <Button
                               size="sm"
                               className="bg-[#006bff] hover:bg-[#0056cc] text-white"
@@ -577,7 +586,7 @@ export function SearchTable() {
                               <ShoppingCart size={16} />
                             </Button>
                           </td>
-                          <td className="p-2">
+                          <td className="">
                             <Button
                               size="sm"
                               className="bg-[#006bff] hover:bg-[#0056cc] text-white"
@@ -599,7 +608,7 @@ export function SearchTable() {
 
             {/* --- Pagination --- */}
             {data?.meta && (
-              <div className="flex justify-center gap-4 items-center mt-4 text-sm text-[#006bff]">
+              <div className="flex justify-center items-center pt-4 gap-2 text-sm text-[#006bff]">
                 <Button
                   variant="outline"
                   disabled={filters.page === 1}
