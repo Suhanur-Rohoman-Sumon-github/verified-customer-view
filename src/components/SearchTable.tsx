@@ -22,7 +22,6 @@ import { toast } from "sonner";
 import Spinner from "./spinner/Spinner";
 import SpinnerOverlay from "./spinner/SpinnerOverlay";
 
-
 interface SearchResult {
   _id: string;
   firstName: string;
@@ -127,18 +126,20 @@ export function SearchTable() {
   // ✅ Add selected SSNs to cart (placeholder)
   const [addToCart, { isLoading: isAddingToCart }] = useAddToCartMutation();
 
-  const handleAddToCart = async () => {
-    if (selectedRows.length === 0) return toast.error("No rows selected.");
+  const handleAddToCart = async (ssnId?: string) => {
+    const ssnIds = ssnId ? [ssnId] : selectedRows;
+
+    if (ssnIds.length === 0) return toast.error("No rows selected.");
 
     if (!user?._id) return toast.error("User not logged in.");
 
     try {
       await addToCart({
         userId: user._id,
-        ssnIds: selectedRows,
+        ssnIds,
       }).unwrap();
 
-      toast.success(`${selectedRows.length} SSNs added to cart.`);
+      toast.success(`${ssnIds.length} SSN(s) added to cart.`);
     } catch (error: any) {
       console.error("Add to cart failed:", error);
       toast.error(
@@ -170,7 +171,7 @@ export function SearchTable() {
         {" "}
         <CardHeader>
           {" "}
-          <CardTitle>Filter</CardTitle>{" "}
+          <CardTitle>Search</CardTitle>{" "}
         </CardHeader>{" "}
         <CardContent>
           {" "}
@@ -289,7 +290,7 @@ export function SearchTable() {
                   {" "}
                   <SelectTrigger className="min-w-[160px] w-full md:w-[180px]">
                     {" "}
-                    <SelectValue placeholder="DOB From" />{" "}
+                    <SelectValue placeholder=" From" />{" "}
                   </SelectTrigger>{" "}
                   <SelectContent>
                     {" "}
@@ -311,7 +312,7 @@ export function SearchTable() {
                   {" "}
                   <SelectTrigger className="min-w-[160px] w-full md:w-[180px]">
                     {" "}
-                    <SelectValue placeholder="DOB To" />{" "}
+                    <SelectValue placeholder=" To" />{" "}
                   </SelectTrigger>{" "}
                   <SelectContent>
                     {" "}
@@ -455,14 +456,15 @@ export function SearchTable() {
               <div className="flex gap-2">
                 <Button
                   className="bg-[#006bff] hover:bg-[#0056cc] text-white"
-                  onClick={handleAddToCart}
+                  onClick={() => handleAddToCart()}
                   disabled={selectedRows.length === 0}
                 >
                   Add to Cart Selected
                 </Button>
+
                 <Button
                   className="bg-green-600 hover:bg-green-700 text-white"
-                  onClick={handleBuySelected}
+                  onClick={() => handleBuySelected()} // ✅ Wrap in arrow function
                   disabled={selectedRows.length === 0}
                 >
                   Buy Selected
@@ -514,6 +516,7 @@ export function SearchTable() {
                       <th className="p-2">DOB</th>
                       <th className="p-2">Country</th>
                       <th className="p-2">Price</th>
+                      <th className="p-2">Add to Cart</th>
                       <th className="p-2">Buy</th>
                     </tr>
                   </thead>
@@ -560,9 +563,19 @@ export function SearchTable() {
                             <Button
                               size="sm"
                               className="bg-[#006bff] hover:bg-[#0056cc] text-white"
+                              onClick={() => handleAddToCart(row._id)}
+                            >
+                              <ShoppingCart size={16} />
+                            </Button>
+                          </td>
+                          <td className="p-2">
+                            <Button
+                              size="sm"
+                              className="bg-[#006bff] hover:bg-[#0056cc] text-white"
                               onClick={() => handleBuy(row._id)}
                             >
                               <ShoppingCart size={16} />
+                              Buy Now
                             </Button>
                           </td>
                         </tr>

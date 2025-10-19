@@ -11,6 +11,7 @@ import {
   LogOut,
   Menu,
   X,
+  Newspaper,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
@@ -39,9 +40,9 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
     { id: "orders", title: t("sidebar.orders"), icon: ShoppingCart },
     { id: "recharge", title: t("sidebar.recharge"), icon: PlusCircle },
     { id: "cart", title: t("cart"), icon: ShoppingCart },
-    { id: "settings", title: t("Settings"), icon: Settings },
     { id: "support", title: t("Support"), icon: Headset },
     { id: "rules", title: t("sidebar.rules"), icon: ShieldCheck },
+    { id: "News", title: t("News"), icon: Newspaper },
     { id: "referrals", title: t("sidebar.referrals"), icon: Gift },
   ];
 

@@ -417,6 +417,52 @@ export default function Payment() {
                 </div>
               </div>
             )}
+            {/* Bonus Table */}
+            <div className="max-w-2xl mx-auto mt-8">
+              <h2 className="text-xl font-semibold text-[#006bff] mb-4">
+                Deposit Bonus Tiers
+              </h2>
+              <div className="overflow-x-auto">
+                <table className="min-w-full border border-gray-200 rounded-lg overflow-hidden">
+                  <thead className="bg-gray-100">
+                    <tr>
+                      <th className="px-4 py-2 text-left text-gray-700 font-semibold border-b">
+                        Deposit Amount (USD)
+                      </th>
+                      <th className="px-4 py-2 text-left text-gray-700 font-semibold border-b">
+                        Bonus
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr className="hover:bg-gray-50">
+                      <td className="px-4 py-2 border-b">$100 – $199</td>
+                      <td className="px-4 py-2 border-b">15%</td>
+                    </tr>
+                    <tr className="hover:bg-gray-50">
+                      <td className="px-4 py-2 border-b">$250 – $499</td>
+                      <td className="px-4 py-2 border-b">25%</td>
+                    </tr>
+                    <tr className="hover:bg-gray-50">
+                      <td className="px-4 py-2 border-b">$500 – $999</td>
+                      <td className="px-4 py-2 border-b">35%</td>
+                    </tr>
+                    <tr className="hover:bg-gray-50">
+                      <td className="px-4 py-2 border-b">$1000 – $1999</td>
+                      <td className="px-4 py-2 border-b">50%</td>
+                    </tr>
+                    <tr className="hover:bg-gray-50">
+                      <td className="px-4 py-2 border-b">$2000 – $4999</td>
+                      <td className="px-4 py-2 border-b">70%</td>
+                    </tr>
+                    <tr className="hover:bg-gray-50">
+                      <td className="px-4 py-2 border-b">$5000 – $99999</td>
+                      <td className="px-4 py-2 border-b">100%</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </CardContent>
         </Card>
       </div>

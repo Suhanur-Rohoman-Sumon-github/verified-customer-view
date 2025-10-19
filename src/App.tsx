@@ -13,6 +13,7 @@ import { Provider } from "react-redux";
 import { store } from "./redux/store";
 import ProtectedRoute from "./components/routes/ProtectedRoute";
 import CartTable from "./components/CartTable";
+import SettingsPage from "./components/Settings";
 
 const App = () => (
   <Provider store={store}>
@@ -47,6 +48,14 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <CartTable />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/settings"
+              element={
+                <ProtectedRoute>
+                  <SettingsPage />
                 </ProtectedRoute>
               }
             />

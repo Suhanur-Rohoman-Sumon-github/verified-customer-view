@@ -15,7 +15,7 @@ import { useGetMyBalanceQuery } from "@/redux/fetures/auth/auth.api";
 import Cookies from "js-cookie";
 import { useAppDispatch } from "@/redux/hook";
 import { logOut } from "@/redux/fetures/auth/auth.slice";
-
+import Marquee from "react-fast-marquee";
 export function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
   const navigate = useNavigate();
   const user = useCurrentUser();
@@ -53,23 +53,25 @@ export function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
       {/* Left section */}
       <div className="flex items-center gap-4">
         <img
-          src="https://i.ibb.co.com/WvsZ05HD/Generated-Image-October-19-2025-12-39-AM.png"
+          src="https://i.ibb.co.com/dJbS5Qy3/Generated-Image-October-19-2025-12-46-AM.png"
           alt="Logo"
           className="h-14 w-auto"
         />
-        <div className="flex items-center gap-2">
-          <span>Join our Telegram channel</span>
-          <p>
-            <span className="font-semibold">Telegram: </span>
-            <a
-              href="https://t.me/yourchannel"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[#006bff] hover:underline"
-            >
-              @YourTelegram
-            </a>
-          </p>
+        <div className="">
+          <Marquee gradient={false} speed={30}>
+            <span>Join our Telegram channel</span>
+            <span className="ml-4 font-semibold">
+              Telegram:{" "}
+              <a
+                href="https://t.me/yourchannel"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#006bff] hover:underline"
+              >
+                @YourTelegram
+              </a>
+            </span>
+          </Marquee>
         </div>
       </div>
 
@@ -106,6 +108,10 @@ export function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
             align="end"
             style={{ color: "#006bff" }}
           >
+            <DropdownMenuItem className="flex items-center gap-2 text-destructive hover:bg-[#e6f0ff]">
+              <Settings size={16} color="#006bff" />
+              <Link to="/settings">{"settings"}</Link>
+            </DropdownMenuItem>
             <DropdownMenuItem className="flex items-center gap-2 text-destructive hover:bg-[#e6f0ff]">
               <LogOut size={16} color="#006bff" />
               <span onClick={handleLogout}>Logout</span>
