@@ -106,7 +106,13 @@ export function OrdersTable() {
                         <td className="p-2 text-base">{order.city}</td>
                         <td className="p-2 text-base">{order.state}</td>
                         <td className="p-2 text-base">{order.zipCode}</td>
-                        <td className="p-2 text-base">{order.dateOfBirth}</td>
+                        <td className="p-2">
+                          {order.dateOfBirth
+                            ? new Date(order.dateOfBirth).toLocaleDateString(
+                                "en-CA"
+                              )
+                            : "N/A"}
+                        </td>
                         <td className="p-2 text-base ">
                           ${order.price?.toFixed(2)}
                         </td>
@@ -123,7 +129,13 @@ Address: ${order.address}
 City: ${order.city}
 State: ${order.state}
 ZIP Code: ${order.zipCode}
-Date of Birth: ${order.dateOfBirth}
+Date of Birth: ${
+                                order.dateOfBirth
+                                  ? new Date(
+                                      order.dateOfBirth
+                                    ).toLocaleDateString("en-CA")
+                                  : "N/A"
+                              }
 Price: $${order.price || 0}
 ----------------------------------------
 `;

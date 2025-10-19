@@ -310,7 +310,7 @@ export function SearchTable() {
                       data?.data?.map((row: SearchResult) => (
                         <tr
                           key={row._id}
-                          className="hover:bg-[#e6f0ff] border-b"
+                          className="hover:bg-[#e6f0ff] border-b text-center"
                         >
                           <td className="p-2">
                             {row.firstName} {row.lastName}
@@ -318,7 +318,13 @@ export function SearchTable() {
                           <td className="p-2">{row.city}</td>
                           <td className="p-2">{row.state}</td>
                           <td className="p-2">{row.zipCode}</td>
-                          <td className="p-2">{row.dateOfBirth}</td>
+                          <td className="p-2">
+                            {row.dateOfBirth
+                              ? new Date(row.dateOfBirth).toLocaleDateString(
+                                  "en-CA"
+                                )
+                              : "N/A"}
+                          </td>
                           <td className="p-2">{row.country || "USA"}</td>
                           <td className="p-2">${row.price || 0.25}</td>
                           <td className="p-2">

@@ -57,9 +57,9 @@ export function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
       {/* Left section: Logo + Language + Balance */}
       <div className="flex items-center gap-2">
         <img
-          src="https://i.ibb.co.com/sdpcV94t/Generated-Image-October-14-2025-4-54-AM-removebg-preview.png"
+          src="https://i.ibb.co.com/WvsZ05HD/Generated-Image-October-19-2025-12-39-AM.png"
           alt=""
-          className="h-14 w-24 object-cover"
+          className="h-14 w-full "
         />
         <div></div>
         {/* Language */}
