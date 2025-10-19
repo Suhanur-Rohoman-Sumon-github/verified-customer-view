@@ -81,7 +81,7 @@ export default function Signup() {
             <img
               src="https://i.ibb.co.com/WvsZ05HD/Generated-Image-October-19-2025-12-39-AM.png"
               alt="Logo"
-              className="h-32 w-32 object-cover"
+              className="h-32 w-full"
             />
           </CardTitle>
           <CardDescription>Create your account</CardDescription>

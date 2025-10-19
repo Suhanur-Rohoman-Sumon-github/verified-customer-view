@@ -76,7 +76,7 @@ export default function Login() {
             <img
               src="https://i.ibb.co.com/WvsZ05HD/Generated-Image-October-19-2025-12-39-AM.png"
               alt=""
-              className="h-32 w-32 object-cover"
+              className="h-32 w-full"
             />
           </CardTitle>
           <CardDescription>Sign in to your account</CardDescription>
