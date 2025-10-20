@@ -1,11 +1,9 @@
 import { Navigate } from "react-router-dom";
-import { useCurrentUser } from "@/utils/getCurrentUser";
+import { useLoadUserFromCookie } from "@/utils/getCurrentUser";
 import Cookies from "js-cookie";
 
 const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
   const accessToken = Cookies.get("accessToken");
-  
- 
 
   if (!accessToken) {
     return (

@@ -8,12 +8,12 @@ import { Button } from "@/components/ui/button";
 import Spinner from "./spinner/Spinner";
 import { toast } from "sonner";
 
-import { useCurrentUser } from "@/utils/getCurrentUser";
 import {
   useBuySSnMutation,
   useGetCartQuery,
   useRemoveFromCartMutation,
 } from "@/redux/fetures/ssns/ssn.api";
+import { useLoadUserFromCookie } from "@/utils/useLoadUserFromCookie";
 
 interface CartItem {
   _id: string;
@@ -28,7 +28,7 @@ interface CartItem {
 }
 
 export default function CartTable() {
-  const user = useCurrentUser();
+  const user = useLoadUserFromCookie();
   const { data, isLoading, refetch } = useGetCartQuery(user?._id!, {
     skip: !user?._id,
   });

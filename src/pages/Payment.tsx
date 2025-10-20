@@ -6,13 +6,13 @@ import { Label } from "@/components/ui/label";
 import { ArrowLeft, Copy } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useGetMyBalanceQuery } from "@/redux/fetures/auth/auth.api";
-import { useCurrentUser } from "@/utils/getCurrentUser";
 import { useMakeAPaymentMutation } from "@/redux/fetures/payment/payment.api";
 import { use } from "i18next";
 import Decimal from "decimal.js";
 
 import axios from "axios";
 import { toast } from "sonner";
+import { useLoadUserFromCookie } from "@/utils/useLoadUserFromCookie";
 
 // Map your coin names to CoinGecko IDs
 const coinToId: Record<string, string> = {
@@ -30,7 +30,6 @@ const coinNameToBinanceSymbol: Record<string, string> = {
   "Litecoin LTC": "LTC",
   "Ethereum ETH": "ETH",
 };
-
 
 async function fetchLiveRates(
   vsCurrency = "usd"
@@ -61,7 +60,7 @@ export default function Payment() {
     "Ethereum ETH": "0x58c319f105d05e5255846ab8f41eb44f8718a9b9",
   };
 
-  const user = useCurrentUser();
+  const user = useLoadUserFromCookie();
 
   const [loadingRates, setLoadingRates] = useState(true);
 

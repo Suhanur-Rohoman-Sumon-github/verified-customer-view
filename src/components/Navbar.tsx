@@ -10,17 +10,17 @@ import { User, LogOut, Settings, Menu, X, ShoppingCart } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
-import { useCurrentUser } from "@/utils/getCurrentUser";
 import { useGetMyBalanceQuery } from "@/redux/fetures/auth/auth.api";
 import Cookies from "js-cookie";
 import { useAppDispatch } from "@/redux/hook";
 import { logOut } from "@/redux/fetures/auth/auth.slice";
 import Marquee from "react-fast-marquee";
+import { useLoadUserFromCookie } from "@/utils/useLoadUserFromCookie";
 export function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
   const navigate = useNavigate();
-  const user = useCurrentUser();
-  const dispatch = useAppDispatch();
 
+  const dispatch = useAppDispatch();
+  const user = useLoadUserFromCookie();
   const { data: balanceData, refetch } = useGetMyBalanceQuery(
     user?._id as string,
     {
@@ -56,7 +56,7 @@ export function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
           <img
             src="https://i.ibb.co.com/zHGk75Sv/Chat-GPT-Image-Oct-20-2025-10-47-08-AM.png"
             alt="Logo"
-            className="h-14 w-[100px] cursor-pointer"
+            className="h-16 w-[100px] cursor-pointer"
           />
         </Link>
         <div className="text-lg font-semibold text-[]">
@@ -97,7 +97,7 @@ export function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
               <Avatar>
                 <AvatarImage
                   src="https://static.vecteezy.com/system/resources/previews/025/463/773/non_2x/hacker-logo-design-a-mysterious-and-dangerous-hacker-illustration-vector.jpg"
-                  alt={user.username}
+                  alt={user?.username}
                 />
                 <AvatarFallback>
                   {user?.username?.substring(0, 2).toUpperCase()}

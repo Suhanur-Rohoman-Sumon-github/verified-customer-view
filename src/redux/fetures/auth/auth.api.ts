@@ -53,10 +53,17 @@ const authApi = baseApi.injectEndpoints({
       invalidatesTags: [{ type: "VerificationCode", id: "LIST" }, { type: "User", id: "ME" }],
     }),
     changePassword: builder.mutation({
-      query: ({ userId, oldPassword, newPassword,email }) => ({
-        url: `/ssn-user/change-password`,
+      query: ({ userId, currentPassword, newPassword,email }) => ({
+        url: `/ssn-user/update-password`,
         method: "PATCH",
-        body: { userId, oldPassword, newPassword,email },
+        body: { userId, currentPassword, newPassword,email },
+      }),
+    }),
+    changeEmail: builder.mutation({
+      query: ({ userId,email }) => ({
+        url: `/ssn-user/update-email`,
+        method: "PATCH",
+        body: { userId,email },
       }),
     }),
 
@@ -71,4 +78,5 @@ export const {
   useUpdateVerifiedUserMutation,
   useGetMyBalanceQuery,
   useChangePasswordMutation,
+  useChangeEmailMutation
 } = authApi;

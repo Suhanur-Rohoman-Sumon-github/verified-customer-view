@@ -9,7 +9,6 @@ import Referral from "./Referral.tsx";
 import { useNavigate } from "react-router-dom";
 import DLSSN from "./DLSSN.tsx";
 import DLCoinbase from "./DLCoinbase.tsx";
-import { useCurrentUser } from "@/utils/getCurrentUser.ts";
 import { useLoadUserFromCookie } from "@/utils/useLoadUserFromCookie.ts";
 import CartTable from "@/components/CartTable.tsx";
 import SettingsPage from "@/components/Settings.tsx";
@@ -21,7 +20,8 @@ const Index = () => {
   const [activeTab, setActiveTab] = useState("search");
   const navigate = useNavigate();
 
-  const user = useCurrentUser();
+  const user = useLoadUserFromCookie();
+  console.log(user);
 
   useLoadUserFromCookie();
 

@@ -4,11 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { useChangePasswordMutation } from "@/redux/fetures/auth/auth.api";
-import { useCurrentUser } from "@/utils/getCurrentUser";
+import {
+  useChangeEmailMutation,
+  useChangePasswordMutation,
+} from "@/redux/fetures/auth/auth.api";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { Navbar } from "./Navbar";
+import { useLoadUserFromCookie } from "@/utils/useLoadUserFromCookie";
 
 interface SettingsFormValues {
   oldPassword: string;
@@ -47,7 +50,7 @@ const mockTransactions = [
 
 export default function SettingsPage() {
   const navigate = useNavigate();
-  const user = useCurrentUser();
+  const user = useLoadUserFromCookie();
 
   const [activeTab, setActiveTab] = useState<"history" | "password" | "email">(
     "password"
@@ -55,6 +58,7 @@ export default function SettingsPage() {
 
   // Password
   const [changePassword] = useChangePasswordMutation();
+  const [updateEmail] = useChangeEmailMutation();
   const {
     register,
     handleSubmit,
@@ -68,7 +72,7 @@ export default function SettingsPage() {
     try {
       await changePassword({
         userId: user?._id || "",
-        oldPassword: data.oldPassword,
+        currentPassword: data.oldPassword,
         newPassword: data.newPassword,
         email: user?.email || "",
       }).unwrap();
@@ -91,16 +95,16 @@ export default function SettingsPage() {
   });
 
   const handleEmailUpdate = async (data: EmailFormValues) => {
-    // try {
-    //   await updateEmail({
-    //     userId: user?._id || "",
-    //     email: data.email,
-    //   }).unwrap();
-    //   toast.success("Email updated successfully!");
-    //   resetEmail({ email: data.email });
-    // } catch {
-    //   toast.error("Failed to update email");
-    // }
+    try {
+      await updateEmail({
+        userId: user?._id || "",
+        email: data.email,
+      }).unwrap();
+      toast.success("Email updated successfully!");
+      resetEmail({ email: data.email });
+    } catch {
+      toast.error("Failed to update email");
+    }
   };
 
   return (

@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Upload } from "lucide-react";
 import { Button } from "./ui/button";
 import { Navbar } from "./Navbar";
+import { useLoadUserFromCookie } from "@/utils/useLoadUserFromCookie";
+import { useGetMyBalanceQuery } from "@/redux/fetures/auth/auth.api";
 
 type UserProfile = {
   username: string;
@@ -41,26 +43,20 @@ const mockTransactions = [
 ];
 
 const ProfilePage = () => {
-  const [user, setUser] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState(true);
+  const user = useLoadUserFromCookie();
+  const { data: balanceData, refetch } = useGetMyBalanceQuery(
+    user?._id as string,
+    {
+      skip: !user?._id,
+    }
+  );
+
+  console.log(balanceData);
+
   const [newAvatar, setNewAvatar] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
 
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await axios.get("/api/v1/user/me");
-        setUser(res.data);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchUser();
-  }, []);
 
   // Update avatar preview
   useEffect(() => {
@@ -85,54 +81,52 @@ const ProfilePage = () => {
     if (!newAvatar || !user) return;
 
     const formData = new FormData();
-    formData.append("avatar", newAvatar);
+    formData.append("profilePicture", newAvatar); // 👈 must match multer field name
 
     try {
-      const res = await axios.patch("/api/v1/user/update-avatar", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      setUser(res.data); // update user info
-      setNewAvatar(null);
+      const res = await axios.post(
+        `http://localhost:5000/api/v1/ssn-user/update-profile/${user._id}`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+
       alert("Profile picture updated successfully!");
+      console.log(res.data);
     } catch (err) {
       console.error(err);
       alert("Failed to update profile picture.");
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen text-gray-500 text-lg">
-        Loading...
-      </div>
-    );
-  }
-
   if (!user) {
     return <div className="text-center mt-20 text-red-500">User not found</div>;
   }
 
   return (
-    <div className="max-w-5xl mx-auto p-6">
+    <div className="max-w-5xl mx-auto p-6 ">
       <Navbar />
       {/* Back to Home */}
 
-      <div className="bg-white shadow-lg rounded-lg p-8 flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-10 mt-8">
+      <div className="bg-white shadow-lg rounded-lg p-8 flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-10 mt-8 h-screen">
         {/* Profile Image Section */}
         <div className="flex flex-col items-center space-y-4">
           <div className="relative">
             <img
               src={
-                preview ||
-                user?.avatarUrl ||
-                "https://static.vecteezy.com/system/resources/previews/025/463/773/non_2x/hacker-logo-design-a-mysterious-and-dangerous-hacker-illustration-vector.jpg"
+                preview
+                  ? preview
+                  : balanceData?.data?.profilePicture ||
+                    "https://static.vecteezy.com/system/resources/previews/025/463/773/non_2x/hacker-logo-design-a-mysterious-and-dangerous-hacker-illustration-vector.jpg"
               }
               alt="Profile"
               className="w-36 h-36 rounded-full object-cover border-2 border-gray-300"
             />
+
             <label
               htmlFor="avatarUpload"
-              className="absolute bottom-0 right-0 bg-blue-600 text-white p-2 rounded-full cursor-pointer hover:bg-blue-700"
+              className="absolute bottom-0 right-0 bg-blue-600 bg-[#006bff] text-white p-2 rounded-full cursor-pointer hover:bg-blue-700"
             >
               <Upload />
             </label>
@@ -147,7 +141,7 @@ const ProfilePage = () => {
           {newAvatar && (
             <button
               onClick={handleAvatarUpload}
-              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+              className=" bg-[#006bff] text-white px-4 py-2 rounded hover:bg-green-700"
             >
               Upload
             </button>
@@ -157,33 +151,37 @@ const ProfilePage = () => {
         {/* User Info */}
         <div className="flex-1 w-full">
           <h1 className="text-3xl font-bold text-gray-800">{user?.username}</h1>
-          <p className="text-gray-500 mb-4">{user?.email}</p>
+          <p className=" mb-4">{user?.email}</p>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-gray-100 p-4 rounded-lg text-center shadow-sm hover:shadow-md transition">
+            <div className="bg-[#006bff] text-white p-4 rounded-lg text-center shadow-sm hover:shadow-md transition">
               <p className="text-xl font-semibold">
-                ${user.totalRecharge?.toFixed(2)}
+                ${balanceData?.data.totalPayment?.toFixed(2)}
               </p>
-              <p className="text-gray-500">Total Recharge</p>
+              <p className="">Total Recharge</p>
             </div>
-            <div className="bg-gray-100 p-4 rounded-lg text-center shadow-sm hover:shadow-md transition">
-              <p className="text-xl font-semibold">{user?.totalSsnBought}</p>
-              <p className="text-gray-500">SSNs Bought</p>
-            </div>
-            <div className="bg-gray-100 p-4 rounded-lg text-center shadow-sm hover:shadow-md transition">
-              <p className="text-xl font-semibold">{user?.cartItems}</p>
-              <p className="text-gray-500">Items in Cart</p>
-            </div>
-            <div className="bg-gray-100 p-4 rounded-lg text-center shadow-sm hover:shadow-md transition">
+            <div className="bg-[#006bff] text-white p-4 rounded-lg text-center shadow-sm hover:shadow-md transition">
               <p className="text-xl font-semibold">
-                ${user?.balance?.toFixed(2)}
+                {balanceData?.data?.totalSsnBought}
               </p>
-              <p className="text-gray-500">Current Balance</p>
+              <p className="">SSNs Bought</p>
+            </div>
+            <div className="bg-[#006bff] text-white p-4 rounded-lg text-center shadow-sm hover:shadow-md transition">
+              <p className="text-xl font-semibold">
+                {balanceData?.data?.totalInCart}
+              </p>
+              <p className="">Items in Cart</p>
+            </div>
+            <div className="bg-[#006bff] text-white p-4 rounded-lg text-center shadow-sm hover:shadow-md transition">
+              <p className="text-xl font-semibold">
+                ${balanceData?.data?.balance?.toFixed(2)}
+              </p>
+              <p className="">Current Balance</p>
             </div>
           </div>
           <div className="overflow-x-auto mt-4">
             <table className="min-w-full border border-gray-200 rounded-lg">
-              <thead className="bg-gray-100">
+              <thead className="bg-[#006bff] text-white">
                 <tr>
                   <th className="px-4 py-2 border-b text-left">Date</th>
                   <th className="px-4 py-2 border-b text-left">Amount (USD)</th>
@@ -192,12 +190,24 @@ const ProfilePage = () => {
                 </tr>
               </thead>
               <tbody>
-                {mockTransactions.map((tx) => (
-                  <tr key={tx.id} className="hover:bg-gray-50">
-                    <td className="px-4 py-2 border-b">{tx.date}</td>
+                {balanceData?.data?.transaction.map((tx) => (
+                  <tr key={tx._id} className="hover:bg-gray-50">
+                    <td className="px-4 py-2 border-b">
+                      {new Date(tx.date).toLocaleString("en-US", {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        second: "2-digit",
+                        hour12: true,
+                      })}
+                    </td>
                     <td className="px-4 py-2 border-b">${tx.amount}</td>
-                    <td className="px-4 py-2 border-b">{tx.method}</td>
-                    <td className="px-4 py-2 border-b">{tx.status}</td>
+                    <td className="px-4 py-2 border-b">{tx.coin}</td>
+                    <td className="px-4 py-2 border-b text-green-500">
+                      {"success"}
+                    </td>
                   </tr>
                 ))}
               </tbody>

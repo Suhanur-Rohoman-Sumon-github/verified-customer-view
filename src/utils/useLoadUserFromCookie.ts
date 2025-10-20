@@ -22,9 +22,9 @@ type DecodedToken = {
 
 export function useLoadUserFromCookie() {
   const dispatch = useAppDispatch();
-
+ const accessToken = Cookies.get("accessToken");
   useEffect(() => {
-    const accessToken = Cookies.get("accessToken");
+   
     if (!accessToken) return;
 
     try {
@@ -42,5 +42,9 @@ export function useLoadUserFromCookie() {
       console.error("Invalid token", err);
       dispatch(logOut())
     }
-  }, [dispatch]);
+  }, [dispatch,
+    accessToken
+  ]);
+  const user = Cookies.get("accessToken") ? jwtDecode<DecodedToken>(accessToken) : null;
+  return user;
 }

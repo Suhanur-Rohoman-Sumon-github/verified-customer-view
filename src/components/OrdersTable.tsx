@@ -6,10 +6,11 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Download } from "lucide-react";
 import { useGetMySsnQuery } from "@/redux/fetures/ssns/ssn.api";
-import { useCurrentUser } from "@/utils/getCurrentUser";
+import { useLoadUserFromCookie } from "@/utils/useLoadUserFromCookie";
+
 
 export function OrdersTable() {
-  const user = useCurrentUser();
+  const user = useLoadUserFromCookie();
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const { data, error, isLoading, refetch } = useGetMySsnQuery(user._id);
 
@@ -102,16 +103,10 @@ export function OrdersTable() {
                           {order.firstName} {order.lastName}
                         </td>
                         <td className="text-base">{order.ssnNumber}</td>
-                        <td className="text-base uppercase">
-                          {order.address}
-                        </td>
-                        <td className="text-base uppercase">
-                          {order.city}
-                        </td>
+                        <td className="text-base uppercase">{order.address}</td>
+                        <td className="text-base uppercase">{order.city}</td>
                         <td className="text-base">{order.state}</td>
-                        <td className="text-base uppercase">
-                          {order.zipCode}
-                        </td>
+                        <td className="text-base uppercase">{order.zipCode}</td>
                         <td className="p-2">
                           {order.dateOfBirth
                             ? new Date(order.dateOfBirth).toLocaleDateString(

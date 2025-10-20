@@ -17,10 +17,10 @@ import {
   useBuySSnMutation,
   useGetSSnsQuery,
 } from "@/redux/fetures/ssns/ssn.api";
-import { useCurrentUser } from "@/utils/getCurrentUser";
 import { toast } from "sonner";
 import Spinner from "./spinner/Spinner";
 import SpinnerOverlay from "./spinner/SpinnerOverlay";
+import { useLoadUserFromCookie } from "@/utils/useLoadUserFromCookie";
 
 interface SearchResult {
   _id: string;
@@ -52,7 +52,7 @@ export function SearchTable() {
     limit: 14,
   });
 
-  const user = useCurrentUser();
+  const user = useLoadUserFromCookie();
   const [buy, { isLoading: isBuying }] = useBuySSnMutation();
   const { data, isLoading, refetch } = useGetSSnsQuery(filters);
 
