@@ -14,6 +14,7 @@ import { store } from "./redux/store";
 import ProtectedRoute from "./components/routes/ProtectedRoute";
 import CartTable from "./components/CartTable";
 import SettingsPage from "./components/Settings";
+import ProfilePage from "./components/Profile";
 
 const App = () => (
   <Provider store={store}>
@@ -56,6 +57,14 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <SettingsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <ProfilePage />
                 </ProtectedRoute>
               }
             />

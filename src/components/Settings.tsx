@@ -7,6 +7,8 @@ import { toast } from "sonner";
 import { useChangePasswordMutation } from "@/redux/fetures/auth/auth.api";
 import { useCurrentUser } from "@/utils/getCurrentUser";
 import { useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
+import { Navbar } from "./Navbar";
 
 interface SettingsFormValues {
   oldPassword: string;
@@ -48,7 +50,7 @@ export default function SettingsPage() {
   const user = useCurrentUser();
 
   const [activeTab, setActiveTab] = useState<"history" | "password" | "email">(
-    "history"
+    "password"
   );
 
   // Password
@@ -104,22 +106,10 @@ export default function SettingsPage() {
   return (
     <div className="max-w-3xl mx-auto mt-10 p-6 bg-white rounded-md shadow-md">
       {/* Back to Home */}
-      <Button variant="ghost" className="mb-6" onClick={() => navigate("/")}>
-        Back to Home
-      </Button>
+      <Navbar />
 
       {/* Tabs */}
-      <div className="flex border-b border-gray-200 mb-6">
-        <button
-          className={`px-4 py-2 font-semibold ${
-            activeTab === "history"
-              ? "border-b-2 border-blue-600 text-blue-600"
-              : "text-gray-600"
-          }`}
-          onClick={() => setActiveTab("history")}
-        >
-          Transaction History
-        </button>
+      <div className="flex border-b border-gray-200 mb-6 mt-4">
         <button
           className={`px-4 py-2 font-semibold ${
             activeTab === "password"
@@ -144,32 +134,6 @@ export default function SettingsPage() {
 
       {/* Tab Contents */}
       <div>
-        {/* Transaction History */}
-        {activeTab === "history" && (
-          <div className="overflow-x-auto">
-            <table className="min-w-full border border-gray-200 rounded-lg">
-              <thead className="bg-gray-100">
-                <tr>
-                  <th className="px-4 py-2 border-b text-left">Date</th>
-                  <th className="px-4 py-2 border-b text-left">Amount (USD)</th>
-                  <th className="px-4 py-2 border-b text-left">Method</th>
-                  <th className="px-4 py-2 border-b text-left">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {mockTransactions.map((tx) => (
-                  <tr key={tx.id} className="hover:bg-gray-50">
-                    <td className="px-4 py-2 border-b">{tx.date}</td>
-                    <td className="px-4 py-2 border-b">${tx.amount}</td>
-                    <td className="px-4 py-2 border-b">{tx.method}</td>
-                    <td className="px-4 py-2 border-b">{tx.status}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-
         {/* Update Password */}
         {activeTab === "password" && (
           <form

@@ -52,11 +52,13 @@ export function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
     <div className="fixed top-0 left-0 z-50 w-full bg-gray-100 border-b px-4 py-2 flex items-center justify-between gap-4">
       {/* Left section */}
       <div className="flex items-center gap-4">
-        <img
-          src="https://i.ibb.co.com/dJbS5Qy3/Generated-Image-October-19-2025-12-46-AM.png"
-          alt="Logo"
-          className="h-14 w-auto"
-        />
+        <Link to="/">
+          <img
+            src="https://i.ibb.co.com/zHGk75Sv/Chat-GPT-Image-Oct-20-2025-10-47-08-AM.png"
+            alt="Logo"
+            className="h-14 w-[100px] cursor-pointer"
+          />
+        </Link>
         <div className="text-lg font-semibold text-[]">
           <Marquee gradient={false} speed={30}>
             <span>Join our Telegram channel</span>
@@ -108,15 +110,21 @@ export function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
             align="end"
             style={{ color: "#006bff" }}
           >
-            <DropdownMenuItem className="flex items-center gap-2 text-destructive hover:bg-[#e6f0ff]">
-              <User size={16} color="#006bff" />
-              {user?.username}
-            </DropdownMenuItem>
-            <DropdownMenuItem className="flex items-center gap-2 text-destructive hover:bg-[#e6f0ff]">
-              <Settings size={16} color="#006bff" />
-              <Link to="/settings">{"settings"}</Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem className="flex items-center gap-2 text-destructive hover:bg-[#e6f0ff]">
+            <Link className="cursor-pointer" to="/profile">
+              {" "}
+              <DropdownMenuItem className="flex items-center gap-2 text-destructive hover:bg-[#e6f0ff] cursor-pointer">
+                <User size={16} color="#006bff" />
+                {user?.username}
+              </DropdownMenuItem>
+            </Link>
+            <Link className="cursor-pointer" to="/settings">
+              {" "}
+              <DropdownMenuItem className="flex items-center gap-2 text-destructive hover:bg-[#e6f0ff] cursor-pointer">
+                <Settings size={16} color="#006bff" />
+                {"settings"}
+              </DropdownMenuItem>
+            </Link>
+            <DropdownMenuItem className="flex items-center gap-2 text-destructive hover:bg-[#e6f0ff] cursor-pointer">
               <LogOut size={16} color="#006bff" />
               <span onClick={handleLogout}>Logout</span>
             </DropdownMenuItem>

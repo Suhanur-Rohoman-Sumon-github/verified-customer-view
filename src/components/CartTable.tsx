@@ -12,6 +12,7 @@ import { useCurrentUser } from "@/utils/getCurrentUser";
 import {
   useBuySSnMutation,
   useGetCartQuery,
+  useRemoveFromCartMutation,
 } from "@/redux/fetures/ssns/ssn.api";
 
 interface CartItem {
@@ -29,9 +30,11 @@ interface CartItem {
 export default function CartTable() {
   const user = useCurrentUser();
   const { data, isLoading, refetch } = useGetCartQuery(user?._id!, {
-    skip: !user?._id, // only run query when user exists
+    skip: !user?._id,
   });
   const [buy, { isLoading: isBuying }] = useBuySSnMutation();
+  const [removefromCart, { isLoading: isRemoving }] =
+    useRemoveFromCartMutation();
 
   useEffect(() => {
     if (user?._id) refetch();
@@ -46,7 +49,7 @@ export default function CartTable() {
       }).unwrap();
 
       toast.success("Purchase successful!");
-
+      await removefromCart({ userId: user?._id!, ssnIds: [ssnId] }).unwrap();
       setTimeout(() => {
         refetch();
       }, 500);
@@ -63,10 +66,6 @@ export default function CartTable() {
       <CardHeader>
         {data?.data?.length === 1 && (
           <div>
-            <p className="text-red-600 font-semibold mb-4 text-center">
-              Please buy these SSNs immediately or other users may purchase your
-              selected SSNs. Be careful!
-            </p>
             <CardTitle>My Cart ({data?.data?.length || 0})</CardTitle>
           </div>
         )}

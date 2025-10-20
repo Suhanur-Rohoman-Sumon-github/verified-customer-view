@@ -12,14 +12,25 @@ import { use } from "i18next";
 import Decimal from "decimal.js";
 
 import axios from "axios";
+import { toast } from "sonner";
 
 // Map your coin names to CoinGecko IDs
 const coinToId: Record<string, string> = {
   "USDT Tron (TRC-20)": "tether",
+  USDC: "usd-coin",
   "Bitcoin BTC": "bitcoin",
   "Litecoin LTC": "litecoin",
   "Ethereum ETH": "ethereum",
 };
+
+const coinNameToBinanceSymbol: Record<string, string> = {
+  "USDT Tron (TRC-20)": "USDT",
+  USDC: "USDC",
+  "Bitcoin BTC": "BTC",
+  "Litecoin LTC": "LTC",
+  "Ethereum ETH": "ETH",
+};
+
 
 async function fetchLiveRates(
   vsCurrency = "usd"
@@ -108,7 +119,7 @@ export default function Payment() {
 
   const handleProceedToPayment = () => {
     if (!amount || !selectedMethod) {
-      alert("Please enter amount and select a payment method");
+      toast("Please enter amount and select a payment method");
       return;
     }
     setStep("pay");
@@ -130,8 +141,10 @@ export default function Payment() {
   }, [countdown, processing]);
 
   const handleCompletePayment = async () => {
-    if (!transactionId || !selectedMethod || !amount) {
-      alert("Please enter all payment details");
+    if (!transactionId || !selectedMethod || !amount || !user?._id) {
+      toast(
+        "Please enter all payment details or wait until user data is loaded"
+      );
       return;
     }
 
@@ -139,7 +152,7 @@ export default function Payment() {
       userId: user?._id,
       amount: Number(amount),
       transactionId,
-      coin: selectedMethod,
+      coin: coinNameToBinanceSymbol[selectedMethod] || selectedMethod,
     };
 
     try {
@@ -151,7 +164,7 @@ export default function Payment() {
       setStep("success");
     } catch (error) {
       console.error("Payment failed:", error);
-      alert("Payment verification failed");
+      toast("Payment verification failed");
       setProcessing(false);
     }
   };
@@ -310,7 +323,7 @@ export default function Payment() {
                       navigator.clipboard.writeText(
                         walletAddress || "YourWalletAddress12345"
                       );
-                      alert("Wallet address copied!");
+                      toast("Wallet address copied!");
                     }}
                   >
                     <Copy size={18} />
@@ -437,27 +450,19 @@ export default function Payment() {
                   <tbody>
                     <tr className="hover:bg-gray-50">
                       <td className="px-4 py-2 border-b">$100 – $199</td>
-                      <td className="px-4 py-2 border-b">15%</td>
+                      <td className="px-4 py-2 border-b">10%</td>
                     </tr>
                     <tr className="hover:bg-gray-50">
                       <td className="px-4 py-2 border-b">$250 – $499</td>
-                      <td className="px-4 py-2 border-b">25%</td>
+                      <td className="px-4 py-2 border-b">20%</td>
                     </tr>
                     <tr className="hover:bg-gray-50">
                       <td className="px-4 py-2 border-b">$500 – $999</td>
-                      <td className="px-4 py-2 border-b">35%</td>
+                      <td className="px-4 py-2 border-b">30%</td>
                     </tr>
                     <tr className="hover:bg-gray-50">
                       <td className="px-4 py-2 border-b">$1000 – $1999</td>
-                      <td className="px-4 py-2 border-b">50%</td>
-                    </tr>
-                    <tr className="hover:bg-gray-50">
-                      <td className="px-4 py-2 border-b">$2000 – $4999</td>
-                      <td className="px-4 py-2 border-b">70%</td>
-                    </tr>
-                    <tr className="hover:bg-gray-50">
-                      <td className="px-4 py-2 border-b">$5000 – $99999</td>
-                      <td className="px-4 py-2 border-b">100%</td>
+                      <td className="px-4 py-2 border-b">40%</td>
                     </tr>
                   </tbody>
                 </table>

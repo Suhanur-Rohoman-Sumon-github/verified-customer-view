@@ -5,7 +5,7 @@ import { RootState } from '../store';
 
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: import.meta.env.VITE_PUBLIC_BASE_API_LOCAL || import.meta.env.VITE_PUBLIC_BASE_API,
+  baseUrl: import.meta.env.VITE_PUBLIC_BASE_API_LOCAL ,
   
   prepareHeaders: (headers, { getState }) => {
     const token = (getState() as RootState).auth.token;
