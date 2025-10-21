@@ -85,7 +85,7 @@ const ProfilePage = () => {
 
     try {
       const res = await axios.post(
-        `http://localhost:5000/api/v1/ssn-user/update-profile/${user._id}`,
+        `https://ssnmax.onrender.com/api/v1/ssn-user/update-profile/${user._id}`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
