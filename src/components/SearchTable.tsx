@@ -56,6 +56,8 @@ export function SearchTable() {
   const [buy, { isLoading: isBuying }] = useBuySSnMutation();
   const { data, isLoading, refetch } = useGetSSnsQuery(filters);
 
+  console.log(data?.data);
+
   // Reset selected rows whenever filters or data change
   useEffect(() => {
     setSelectedRows([]);
@@ -568,13 +570,7 @@ export function SearchTable() {
                           </td>
                           <td className="">{row.state}</td>
                           <td className="">{row.zipCode}</td>
-                          <td className="">
-                            {row.dateOfBirth
-                              ? new Date(row.dateOfBirth).toLocaleDateString(
-                                  "en-CA"
-                                )
-                              : "N/A"}
-                          </td>
+                          <td className="">{row.dateOfBirth}</td>
                           <td className="">{row.country || "USA"}</td>
                           <td className="">${row.price || 0.25}</td>
                           <td className="">

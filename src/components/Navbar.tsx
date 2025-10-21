@@ -96,7 +96,9 @@ export function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
             <Button variant="ghost" className="p-0 cursor-pointer">
               <Avatar>
                 <AvatarImage
-                  src="https://static.vecteezy.com/system/resources/previews/025/463/773/non_2x/hacker-logo-design-a-mysterious-and-dangerous-hacker-illustration-vector.jpg"
+                  src={balanceData?.data?.profilePicture ||
+                    "https://static.vecteezy.com/system/resources/previews/025/463/773/non_2x/hacker-logo-design-a-mysterious-and-dangerous-hacker-illustration-vector.jpg"
+              }
                   alt={user?.username}
                 />
                 <AvatarFallback>
