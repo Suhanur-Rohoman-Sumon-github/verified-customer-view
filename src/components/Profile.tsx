@@ -7,6 +7,7 @@ import { Button } from "./ui/button";
 import { Navbar } from "./Navbar";
 import { useLoadUserFromCookie } from "@/utils/useLoadUserFromCookie";
 import { useGetMyBalanceQuery } from "@/redux/fetures/auth/auth.api";
+import { toast } from "sonner";
 
 type UserProfile = {
   username: string;
@@ -51,7 +52,6 @@ const ProfilePage = () => {
     }
   );
 
-  console.log(balanceData);
 
   const [newAvatar, setNewAvatar] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
@@ -92,11 +92,11 @@ const ProfilePage = () => {
         }
       );
 
-      alert("Profile picture updated successfully!");
-      console.log(res.data);
+      toast("Profile picture updated successfully!");
+    
     } catch (err) {
       console.error(err);
-      alert("Failed to update profile picture.");
+      toast("Failed to update profile picture.");
     }
   };
 

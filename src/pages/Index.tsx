@@ -21,7 +21,7 @@ const Index = () => {
   const navigate = useNavigate();
 
   const user = useLoadUserFromCookie();
-  console.log(user);
+
 
   useLoadUserFromCookie();
 

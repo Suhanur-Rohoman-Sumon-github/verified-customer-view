@@ -56,7 +56,7 @@ export function SearchTable() {
   const [buy, { isLoading: isBuying }] = useBuySSnMutation();
   const { data, isLoading, refetch } = useGetSSnsQuery(filters);
 
-  console.log(data?.data);
+
 
   // Reset selected rows whenever filters or data change
   useEffect(() => {
