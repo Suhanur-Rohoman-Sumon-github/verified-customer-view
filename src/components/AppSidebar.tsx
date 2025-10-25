@@ -39,7 +39,7 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
     { id: "search", title: t("sidebar.search"), icon: Search },
     { id: "orders", title: t("sidebar.orders"), icon: ShoppingCart },
     { id: "recharge", title: t("sidebar.recharge"), icon: PlusCircle },
-    { id: "cart", title: t("cart"), icon: ShoppingCart },
+    { id: "cart", title: t("Cart"), icon: ShoppingCart },
     { id: "support", title: t("Support"), icon: Headset },
     { id: "rules", title: t("sidebar.rules"), icon: ShieldCheck },
     { id: "News", title: t("News"), icon: Newspaper },
@@ -119,7 +119,7 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
       {/* Desktop Sidebar */}
       <div
         className={cn(
-          "hidden md:flex h-screen transition-all duration-300 flex-col bg-gray-100 text-[#006bff]",
+          "hidden md:flex h-screen transition-all duration-300 flex-col  bg-gray-100 text-[#006bff]",
           isCollapsed ? "w-16" : "w-64"
         )}
       >
@@ -130,7 +130,7 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
                 <button
                   onClick={() => onTabChange(item.id)}
                   className={cn(
-                    "w-full flex items-center gap-3 p-3 rounded-md transition-all duration-200",
+                    "w-full flex items-center gap-3 mt-4 p-3 rounded-md transition-all duration-200",
                     activeTab === item.id
                       ? "bg-[#006bff]/10 text-[#006bff] shadow-sm"
                       : "hover:bg-[#e6f0ff] text-gray-500"

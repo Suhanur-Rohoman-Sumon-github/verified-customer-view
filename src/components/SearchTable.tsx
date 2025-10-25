@@ -56,8 +56,6 @@ export function SearchTable() {
   const [buy, { isLoading: isBuying }] = useBuySSnMutation();
   const { data, isLoading, refetch } = useGetSSnsQuery(filters);
 
-
-
   // Reset selected rows whenever filters or data change
   useEffect(() => {
     setSelectedRows([]);
@@ -526,7 +524,7 @@ export function SearchTable() {
                       <th className="">City</th>
                       <th className="">State</th>
                       <th className="">ZIP</th>
-                      <th className="">DOB</th>
+                      <th className="">Birth Year</th>
                       <th className="">Country</th>
                       <th className="">Price</th>
                       <th className="">Add to Cart</th>
@@ -570,7 +568,7 @@ export function SearchTable() {
                           </td>
                           <td className="">{row.state}</td>
                           <td className="">{row.zipCode}</td>
-                          <td className="">{row.dateOfBirth}</td>
+                          <td className="">{row.dateOfBirth.slice(0, 4)}</td>
                           <td className="">{row.country || "USA"}</td>
                           <td className="">${row.price || 0.25}</td>
                           <td className="">

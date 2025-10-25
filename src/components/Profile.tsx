@@ -52,7 +52,6 @@ const ProfilePage = () => {
     }
   );
 
-
   const [newAvatar, setNewAvatar] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
 
@@ -85,7 +84,7 @@ const ProfilePage = () => {
 
     try {
       const res = await axios.post(
-        `https://ssnmax.onrender.com/api/v1/ssn-user/update-profile/${user._id}`,
+        `https://ssnmax.site/api/v1/ssn-user/update-profile/${user._id}`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -93,7 +92,6 @@ const ProfilePage = () => {
       );
 
       toast("Profile picture updated successfully!");
-    
     } catch (err) {
       console.error(err);
       toast("Failed to update profile picture.");

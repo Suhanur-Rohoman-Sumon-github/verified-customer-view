@@ -49,14 +49,14 @@ export function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
   };
 
   return (
-    <div className="fixed top-0 left-0 z-50 w-full bg-gray-100 border-b px-4 py-2 flex items-center justify-between gap-4">
+    <div className="fixed top-0 left-0 z-50 w-full bg-gray-100 border-b px-4  flex items-center justify-between gap-4">
       {/* Left section */}
       <div className="flex items-center gap-4">
         <Link to="/">
           <img
             src="https://i.ibb.co.com/zHGk75Sv/Chat-GPT-Image-Oct-20-2025-10-47-08-AM.png"
             alt="Logo"
-            className="h-16 w-[100px] cursor-pointer"
+            className="h-24 w-[100px] cursor-pointer"
           />
         </Link>
         <div className="text-lg font-semibold text-[]">
@@ -96,9 +96,10 @@ export function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
             <Button variant="ghost" className="p-0 cursor-pointer">
               <Avatar>
                 <AvatarImage
-                  src={balanceData?.data?.profilePicture ||
+                  src={
+                    balanceData?.data?.profilePicture ||
                     "https://static.vecteezy.com/system/resources/previews/025/463/773/non_2x/hacker-logo-design-a-mysterious-and-dangerous-hacker-illustration-vector.jpg"
-              }
+                  }
                   alt={user?.username}
                 />
                 <AvatarFallback>
