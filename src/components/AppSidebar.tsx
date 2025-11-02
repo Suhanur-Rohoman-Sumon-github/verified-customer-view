@@ -16,6 +16,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
+import { Button } from "./ui/button";
 
 interface AppSidebarProps {
   activeTab: string;
@@ -152,8 +153,6 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
               {!isCollapsed && <span className="font-medium">Logout</span>}
             </button>
           </ul>
-
-          {/* Logout button */}
         </nav>
       </div>
     </>

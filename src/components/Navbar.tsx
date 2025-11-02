@@ -16,6 +16,7 @@ import { useAppDispatch } from "@/redux/hook";
 import { logOut } from "@/redux/fetures/auth/auth.slice";
 import Marquee from "react-fast-marquee";
 import { useLoadUserFromCookie } from "@/utils/useLoadUserFromCookie";
+import logo from "../../public/logo1.png";
 export function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
   const navigate = useNavigate();
 
@@ -54,7 +55,7 @@ export function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
       <div className="flex items-center gap-4">
         <Link to="/">
           <img
-            src="https://i.ibb.co.com/zHGk75Sv/Chat-GPT-Image-Oct-20-2025-10-47-08-AM.png"
+            src={logo}
             alt="Logo"
             className="h-24 w-[100px] cursor-pointer"
           />
@@ -127,9 +128,12 @@ export function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
                 {"settings"}
               </DropdownMenuItem>
             </Link>
-            <DropdownMenuItem className="flex items-center gap-2 text-destructive hover:bg-[#e6f0ff] cursor-pointer">
+            <DropdownMenuItem
+              onClick={handleLogout}
+              className="flex items-center gap-2 text-destructive hover:bg-[#e6f0ff] cursor-pointer"
+            >
               <LogOut size={16} color="#006bff" />
-              <span onClick={handleLogout}>Logout</span>
+              <span>Logout</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

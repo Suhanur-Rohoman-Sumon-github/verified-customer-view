@@ -15,6 +15,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { Captcha } from "@/components/Captcha";
 import { useForm } from "react-hook-form";
 import { useRegistrationMutation } from "@/redux/fetures/auth/auth.api";
+import logo from "../../public/logo1.png";
 import { toast } from "sonner";
 
 type SignupFormValues = {
@@ -66,6 +67,7 @@ export default function Signup() {
         navigate("/login");
       }, 1000);
     } catch (err: any) {
+      
       toast.error(
         err?.data?.errorSources?.[0]?.message ||
           "An error occurred during sign up."
@@ -78,11 +80,7 @@ export default function Signup() {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold text-primary flex justify-center items-center">
-            <img
-              src="https://i.ibb.co.com/zHGk75Sv/Chat-GPT-Image-Oct-20-2025-10-47-08-AM.png"
-              alt="Logo"
-              className="h-32 w-full"
-            />
+            <img src={logo} alt="Logo" className="h-32 w-full" />
           </CardTitle>
           <CardDescription>Create your account</CardDescription>
         </CardHeader>

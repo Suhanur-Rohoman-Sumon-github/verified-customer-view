@@ -37,8 +37,8 @@ export default function CartTable() {
     useRemoveFromCartMutation();
 
   useEffect(() => {
-    if (user?._id) refetch();
-  }, [user, refetch]);
+    refetch();
+  }, [refetch]);
 
   const handleBuy = async (ssnId: string) => {
     try {

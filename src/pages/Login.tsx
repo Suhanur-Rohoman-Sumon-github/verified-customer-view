@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import {
   Card,
@@ -18,6 +19,7 @@ import Cookies from "js-cookie";
 import { setUser } from "@/redux/fetures/auth/auth.slice";
 import { useAppDispatch } from "@/redux/hook";
 import { toast } from "sonner";
+import logo from "../../public/logo1.png";
 type LoginFormValues = {
   username: string;
   password: string;
@@ -59,8 +61,11 @@ export default function Login() {
       dispatch(setUser({ user: res.data.user, token: res.data.accessToken }));
 
       toast.success("Login Successful");
-    } catch (error) {
-      toast.error("Login Failed");
+    } catch (err: any) {
+      toast.error(
+        err?.data?.errorSources?.[0]?.message ||
+          "Please Check your Username and Password and try again."
+      );
     }
 
     setTimeout(() => {
@@ -73,11 +78,7 @@ export default function Login() {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold text-primary flex justify-center items-cente">
-            <img
-              src="https://i.ibb.co.com/zHGk75Sv/Chat-GPT-Image-Oct-20-2025-10-47-08-AM.png"
-              alt=""
-              className="h-32 w-full"
-            />
+            <img src={logo} alt="" className="h-32 w-full" />
           </CardTitle>
           <CardDescription>Sign in to your account</CardDescription>
         </CardHeader>
