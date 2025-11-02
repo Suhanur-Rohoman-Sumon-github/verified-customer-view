@@ -67,7 +67,6 @@ export default function Signup() {
         navigate("/login");
       }, 1000);
     } catch (err: any) {
-      
       toast.error(
         err?.data?.errorSources?.[0]?.message ||
           "An error occurred during sign up."
@@ -79,10 +78,12 @@ export default function Signup() {
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
+          <CardDescription className="font-bold text-2xl text-[#006bff]">
+            Create your account
+          </CardDescription>
           <CardTitle className="text-2xl font-bold text-primary flex justify-center items-center">
-            <img src={logo} alt="Logo" className="h-32 w-full" />
+            <img src={logo} alt="Logo" className="h-[200px] w-full" />
           </CardTitle>
-          <CardDescription>Create your account</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

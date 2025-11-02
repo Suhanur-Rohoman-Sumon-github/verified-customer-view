@@ -77,10 +77,12 @@ export default function Login() {
     <div className="min-h-screen flex items-center justify-center bg-background p-4 relative">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
+          <CardDescription className="font-bold text-2xl text-[#006bff]">
+            Sign in to your account
+          </CardDescription>
           <CardTitle className="text-2xl font-bold text-primary flex justify-center items-cente">
-            <img src={logo} alt="" className="h-32 w-full" />
+            <img src={logo} alt="" className="h-[200px] w-full" />
           </CardTitle>
-          <CardDescription>Sign in to your account</CardDescription>
         </CardHeader>
 
         <CardContent>
